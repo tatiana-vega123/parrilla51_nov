@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel Cliente - Parrilla 51</title>
+  <style>
+    body {
+      margin:0;
+      font-family:Arial,Helvetica,sans-serif;
+      background:#3a3a3a;
+      color:#fff;
+    }
+    .navbar {
+      display:grid;
+      grid-template-columns:1fr auto 1fr;
+      align-items:center;
+      background:#2f2f2f;
+      padding:10px 20px;
+    }
+    .brand {
+      font-size:22px;
+      font-weight:bold;
+      color:#ff4444;
+      justify-self:start;
+    }
+    .links {
+      display:flex;
+      gap:20px;
+      justify-content:center;
+    }
+    .links a {
+      color:#fff;
+      text-decoration:none;
+      font-size:16px;
+      transition:color 0.3s;
+    }
+    .links a:hover { color:#ffd700; }
+    .perfil-btn {
+      background:#ffd700;
+      color:#000;
+      padding:8px 14px;
+      border:none;
+      border-radius:4px;
+      font-weight:bold;
+      cursor:pointer;
+      justify-self:end;
+    }
+    .perfil-btn:hover { background:#ffcc00; }
+    .container {
+      padding:40px;
+      text-align:center;
+    }
+    .acciones {
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:center;
+      gap:25px;
+      margin-top:30px;
+    }
+    .card {
+      background:#2f2f2f;
+      border-radius:10px;
+      padding:25px;
+      width:220px;
+      box-shadow:0 3px 8px rgba(0,0,0,0.4);
+      text-align:center;
+      transition:transform 0.2s;
+    }
+    .card:hover { transform:scale(1.05); }
+    .card h3 { color:#ffd700; margin-bottom:12px; }
+    .card a {
+      display:inline-block;
+      padding:10px 15px;
+      background:#ffd700;
+      color:#000;
+      border-radius:6px;
+      font-weight:bold;
+      text-decoration:none;
+    }
+    .card a:hover { background:#ffcc00; }
+    .logout-btn {
+      background:#ff4444;
+      color:#fff;
+      padding:10px 20px;
+      text-decoration:none;
+      border-radius:6px;
+      font-weight:bold;
+      display:inline-block;
+      margin-top:30px;
+    }
+    .logout-btn:hover { background:#cc0000; }
+    footer {
+      text-align:center;
+      padding:15px;
+      background:#2f2f2f;
+      color:#f0f0f0;
+      margin-top:40px;
+      border-top:2px solid #ffd700;
+    }
+
+    /* ===== Modal estilos ===== */
+    .modal {
+      display:none;
+      position:fixed;
+      z-index:1000;
+      left:0; top:0;
+      width:100%; height:100%;
+      background:rgba(0,0,0,0.6);
+      justify-content:center;
+      align-items:center;
+    }
+    .modal-content {
+      background:#2f2f2f;
+      padding:25px;
+      border-radius:10px;
+      width:400px;
+      color:#fff;
+      position:relative;
+    }
+    .close {
+      position:absolute;
+      top:10px;
+      right:15px;
+      font-size:20px;
+      cursor:pointer;
+      color:#fff;
+    }
+    .tab-buttons {
+      display:flex;
+      gap:10px;
+      margin-bottom:15px;
+    }
+    .tab-buttons button {
+      flex:1;
+      padding:8px;
+      background:#ffd700;
+      border:none;
+      border-radius:6px;
+      cursor:pointer;
+      font-weight:bold;
+    }
+    .tab-buttons button:hover { background:#ffcc00; }
+    .tab-section { display:none; }
+    .tab-section input {
+      width:100%;
+      margin:6px 0;
+      padding:8px;
+      border:none;
+      border-radius:6px;
+    }
+    .tab-section button {
+      width:100%;
+      padding:10px;
+      background:#ffd700;
+      border:none;
+      border-radius:6px;
+      font-weight:bold;
+      cursor:pointer;
+    }
+    .tab-section button:hover { background:#ffcc00; }
+    .password-wrapper {
+      display:flex;
+      align-items:center;
+    }
+    .password-wrapper input {
+      flex:1;
+    }
+    .toggle-pass {
+      margin-left:5px;
+      cursor:pointer;
+    }
+  </style>
+</head>
+<body>
+  <!-- NAVBAR -->
+  <div class="navbar">
+    <div class="brand">🍴 Parrilla 51</div>
+    <div class="links">
+      <a href="{{ url_for('cliente.cliente_reservar') }}">Reservar Mesa</a>
+      <a href="{{ url_for('dashboard.cliente_productos') }}">Productos</a>
+      <a href="{{ url_for('dashboard.cliente_carrito') }}">Mi Carrito</a>
+    </div>
+    <button class="perfil-btn" id="perfilBtn">Perfil</button>
+  </div>
+
+  <!-- CONTENIDO -->
+  <div class="container">
+    <h2>Bienvenido, {{ session['nombre'] }}</h2>
+    <p>Desde aquí puedes gestionar tus reservas y pedidos en Parrilla 51 🍴</p>
+
+    <div class="acciones">
+      <div class="card">
+        <h3>📅 Reservar Mesa</h3>
+        <a href="{{ url_for('cliente.cliente_reservar') }}">Ir</a>
+      </div>
+      <div class="card">
+        <h3>🍔 Ver Productos</h3>
+        <a href="{{ url_for('dashboard.cliente_productos') }}">Ir</a>
+      </div>
+      <div class="card">
+        <h3>🛒 Mi Carrito</h3>
+        <a href="{{ url_for('dashboard.cliente_carrito') }}">Ir</a>
+      </div>
+
+      <!-- NUEVAS RUTAS AÑADIDAS -->
+      <div class="card">
+        <h3>📖 Ver Reservas</h3>
+       <a href="{{ url_for('dashboard.cliente_ver_reservas') }}">ir</a>
+
+      </div>
+      <div class="card">
+        <h3>📦 Mis Pedidos</h3>
+        <a href="{{ url_for('dashboard.cliente_mis_pedidos') }}">ir</a>
+      </div>
+    </div>
+
+    <!-- Botón salir fuera del navbar -->
+    <a href="{{ url_for('auth.logout') }}" class="logout-btn">Salir</a>
+  </div>
+
+  <!-- Modal Perfil -->
+  <div id="perfilModal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="closeModal">&times;</span>
+      <h2>Mi Perfil</h2>
+
+      <div class="tab-buttons">
+        <button onclick="showSection('perfil-section')">Editar Info</button>
+        <button onclick="showSection('pass-section')">Cambiar Contraseña</button>
+      </div>
+
+      <!-- Sección editar info -->
+      <div id="perfil-section" class="tab-section">
+        <form id="perfilForm">
+          <input type="text" id="nombre" name="nombre" placeholder="Nombre">
+          <input type="text" id="apellido" name="apellido" placeholder="Apellido">
+          <input type="text" id="telefono" name="telefono" placeholder="Teléfono">
+          <input type="text" id="direccion" name="direccion" placeholder="Dirección">
+          <input type="email" id="correo" name="correo" placeholder="Correo">
+          <button type="submit">Guardar Cambios</button>
+        </form>
+      </div>
+
+      <!-- Sección cambiar contraseña -->
+      <div id="pass-section" class="tab-section">
+        <form id="passForm">
+          <div class="password-wrapper">
+            <input type="password" id="oldPass" placeholder="Contraseña Actual" required>
+            <span class="toggle-pass" onclick="togglePassword('oldPass', this)">👁️</span>
+          </div>
+          <div class="password-wrapper">
+            <input type="password" id="newPass" placeholder="Nueva Contraseña" required>
+            <span class="toggle-pass" onclick="togglePassword('newPass', this)">👁️</span>
+          </div>
+          <div class="password-wrapper">
+            <input type="password" id="confirmPass" placeholder="Confirmar Nueva Contraseña" required>
+            <span class="toggle-pass" onclick="togglePassword('confirmPass', this)">👁️</span>
+          </div>
+          <button type="submit">Cambiar Contraseña</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+<script>
+  const modal = document.getElementById('perfilModal');
+  const btn = document.getElementById('perfilBtn');
+  const span = document.getElementById('closeModal');
+
+  btn.onclick = function() {
+    fetch('/perfil')
+      .then(res => res.json())
+      .then(data => {
+        if(data.error){alert('Debes iniciar sesión');return;}
+        document.getElementById('nombre').value = data.nombre;
+        document.getElementById('apellido').value = data.apellido;
+        document.getElementById('telefono').value = data.telefono;
+        document.getElementById('direccion').value = data.direccion;
+        document.getElementById('correo').value = data.correo;
+        modal.style.display = "flex";
+        showSection('perfil-section');
+      });
+  }
+  span.onclick = function(){ modal.style.display="none"; }
+  window.onclick = function(e){ if(e.target==modal) modal.style.display="none"; }
+
+  function showSection(id){
+    document.querySelectorAll('.tab-section').forEach(sec=> sec.style.display="none");
+    document.getElementById(id).style.display="block";
+  }
+  function togglePassword(id, el){
+    const input=document.getElementById(id);
+    if(input.type==="password"){ input.type="text"; el.textContent="🙈"; }
+    else { input.type="password"; el.textContent="👁️"; }
+  }
+
+  // Guardar perfil
+  document.getElementById('perfilForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    const payload = {
+      nombre: nombre.value,
+      apellido: apellido.value,
+      telefono: telefono.value,
+      direccion: direccion.value,
+      correo: correo.value
+    };
+    fetch('/perfil', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload)
+    }).then(r=>r.json()).then(resp=>{
+      alert(resp.mensaje);
+      modal.style.display='none';
+    });
+  });
+
+  // Cambiar contraseña
+  document.getElementById('passForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    const oldPass=document.getElementById('oldPass').value;
+    const newPass=document.getElementById('newPass').value;
+    const confirmPass=document.getElementById('confirmPass').value;
+    if(newPass!==confirmPass){ alert('Las contraseñas no coinciden'); return; }
+    fetch('/cambiar_contrasena',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({oldPass,newPass})
+    }).then(r=>r.json()).then(resp=>{
+      alert(resp.mensaje);
+      if(resp.mensaje.includes('correctamente')){
+        modal.style.display='none';
+      }
+    });
+  });
+</script>
+</body>
+</html>

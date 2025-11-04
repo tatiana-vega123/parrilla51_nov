@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reportes de Ventas - Parrilla 51</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #3a3a3a;
+      color: #f0f0f0;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .navbar-custom {
+      background-color: #2f2f2f;
+      padding: 15px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 3px solid #ffd700;
+    }
+
+    .navbar-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .navbar-left img {
+      height: 45px;
+    }
+
+    .navbar-left span {
+      font-size: 24px;
+      font-weight: bold;
+      color: #ff4444;
+    }
+
+    .btn-volver {
+      background-color: #ffd700;
+      color: black;
+      font-weight: bold;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+
+    .btn-volver:hover {
+      background-color: #e6b800;
+      color: black;
+      transform: translateY(-2px);
+    }
+
+    .stats-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin: 20px 0;
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg, #2f2f2f 0%, #3a3a3a 100%);
+      padding: 20px;
+      border-radius: 10px;
+      border: 2px solid #ffd700;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 32px;
+      font-weight: bold;
+      color: #ffd700;
+      margin: 10px 0;
+    }
+
+    .stat-label {
+      color: #f0f0f0;
+      font-size: 14px;
+      text-transform: uppercase;
+    }
+
+    .filter-card {
+      background-color: #2f2f2f;
+      padding: 20px;
+      border-radius: 10px;
+      border: 2px solid #ff4444;
+      margin-bottom: 20px;
+    }
+
+    .table-container {
+      background-color: #2f2f2f;
+      padding: 20px;
+      border-radius: 10px;
+      border: 2px solid #ffd700;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      color: #fff;
+      border-collapse: collapse;
+    }
+
+    th {
+      background-color: #1f1f1f;
+      color: #ffd700;
+      padding: 12px;
+      text-align: left;
+      font-weight: bold;
+      border-bottom: 2px solid #ff4444;
+    }
+
+    td {
+      padding: 12px;
+      border-bottom: 1px solid #444;
+    }
+
+    tr:hover {
+      background-color: #3a3a3a;
+    }
+
+    .badge {
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .badge-entregado {
+      background-color: #28a745;
+      color: white;
+    }
+
+    .badge-pendiente {
+      background-color: #ffc107;
+      color: black;
+    }
+
+    .badge-cancelado {
+      background-color: #dc3545;
+      color: white;
+    }
+
+    .badge-preparacion {
+      background-color: #17a2b8;
+      color: white;
+    }
+
+    .btn-export {
+      background-color: #ff4444;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-weight: bold;
+      margin-right: 10px;
+      transition: all 0.3s;
+    }
+
+    .btn-export:hover {
+      background-color: #e63b3b;
+      transform: translateY(-2px);
+    }
+
+    .form-control, .form-select {
+      background-color: #4a4a4a;
+      color: #f0f0f0;
+      border: 1px solid #ffd700;
+    }
+
+    .form-control:focus, .form-select:focus {
+      background-color: #4a4a4a;
+      color: #f0f0f0;
+      border-color: #ff4444;
+      box-shadow: 0 0 0 0.2rem rgba(255, 68, 68, 0.25);
+    }
+
+    footer {
+      background: #2f2f2f;
+      color: #fff;
+      text-align: center;
+      padding: 15px;
+      border-top: 3px solid #ffd700;
+      margin-top: auto;
+    }
+
+    .no-data {
+      text-align: center;
+      padding: 40px;
+      color: #ffd700;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar-custom">
+    <div class="navbar-left">
+      <img src="{{ url_for('static', filename='img/logooo.png') }}" alt="Logo">
+      <span>Parrilla 51 - Reportes de Ventas</span>
+    </div>
+    <a href="{{ url_for('admin.admin_dashboard') }}" class="btn-volver">← Volver al Panel</a>
+  </nav>
+
+  <!-- CONTENIDO -->
+  <div class="container mt-4 mb-4">
+    
+    <!-- ESTADÍSTICAS -->
+    <div class="stats-container">
+      <div class="stat-card">
+        <div class="stat-label">Total de Pedidos</div>
+        <div class="stat-value">{{ total_pedidos }}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total en Ventas</div>
+        <div class="stat-value">${{ "{:,.0f}".format(total_ventas) }}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Promedio por Pedido</div>
+        <div class="stat-value">
+          {% if total_pedidos > 0 %}
+            ${{ "{:,.0f}".format(total_ventas / total_pedidos) }}
+          {% else %}
+            $0
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- FILTROS Y EXPORTACIÓN -->
+    <div class="filter-card">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 style="color: #ffd700; margin: 0;">🔍 Filtros de Búsqueda</h5>
+        <div>
+          <a href="{{ url_for('reportes.exportar_ventas_excel') }}" class="btn-export">📊 Exportar Excel</a>
+          <a href="{{ url_for('reportes.exportar_ventas_pdf') }}" class="btn-export">📄 Exportar PDF</a>
+        </div>
+      </div>
+
+      <form method="POST" action="{{ url_for('reportes.reportes_ventas') }}">
+        <div class="row g-3">
+          <div class="col-md-4">
+            <input 
+              type="text" 
+              name="busqueda" 
+              class="form-control" 
+              placeholder="Buscar por cliente o ID..."
+              value="{{ busqueda }}"
+            >
+          </div>
+          <div class="col-md-3">
+            <input 
+              type="month" 
+              name="mes" 
+              class="form-control"
+              value="{{ filtro_mes }}"
+            >
+          </div>
+          <div class="col-md-3">
+            <select name="estado" class="form-select">
+              <option value="">Todos los estados</option>
+              <option value="pendiente" {% if filtro_estado == 'pendiente' %}selected{% endif %}>Pendiente</option>
+              <option value="en preparacion" {% if filtro_estado == 'en preparacion' %}selected{% endif %}>En Preparación</option>
+              <option value="entregado" {% if filtro_estado == 'entregado' %}selected{% endif %}>Entregado</option>
+              <option value="cancelado" {% if filtro_estado == 'cancelado' %}selected{% endif %}>Cancelado</option>
+            </select>
+          </div>
+          <div class="col-md-2">
+            <button type="submit" class="btn btn-export w-100">Filtrar</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- TABLA DE PEDIDOS -->
+    <div class="table-container">
+      <h5 style="color: #ffd700; margin-bottom: 20px;">📋 Listado de Pedidos</h5>
+      
+      {% if pedidos and pedidos|length > 0 %}
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Cliente</th>
+              <th>Fecha</th>
+              <th>Hora</th>
+              <th>Total</th>
+              <th>Método Pago</th>
+              <th>Tipo Entrega</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for pedido in pedidos %}
+            <tr>
+              <td><strong>#{{ pedido.id_pedido }}</strong></td>
+              <td>{{ pedido.nombre }} {{ pedido.apellido }}</td>
+              <td>{{ pedido.fecha }}</td>
+              <td>{{ pedido.hora }}</td>
+              <td><strong>${{ "{:,.0f}".format(pedido.total) }}</strong></td>
+              <td>{{ pedido.metodo_pago or 'N/A' }}</td>
+              <td>{{ pedido.tipo_entrega or 'N/A' }}</td>
+              <td>
+                {% if pedido.estado == 'entregado' %}
+                  <span class="badge badge-entregado">✓ Entregado</span>
+                {% elif pedido.estado == 'pendiente' %}
+                  <span class="badge badge-pendiente">⏳ Pendiente</span>
+                {% elif pedido.estado == 'cancelado' %}
+                  <span class="badge badge-cancelado">✗ Cancelado</span>
+                {% elif pedido.estado == 'en preparacion' %}
+                  <span class="badge badge-preparacion">🔥 En Preparación</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <div class="no-data">
+          📊 No se encontraron pedidos con los filtros seleccionados
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <footer>
+    © 2025 Parrilla 51 - Todos los derechos reservados
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

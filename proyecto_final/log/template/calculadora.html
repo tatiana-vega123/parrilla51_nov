@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+  <html lang="es">
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Orden Mesa {{ mesa }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+    <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        background: #3a3a3a;
+        color: #f0f0f0;
+        font-family: "Segoe UI", Tahoma, sans-serif;
+      }
+
+      main {
+        flex: 1;
+      }
+
+      .navbar {
+        display: flex;
+        justify-content: space-between;
+        background: #2f2f2f;
+        padding: 12px 30px;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 22px;
+        font-weight: bold;
+        color: #ff4444;
+      }
+
+      .logo img {
+        height: 40px;
+      }
+
+      .nav-links {
+        list-style: none;
+        display: flex;
+        gap: 25px;
+        margin: 0;
+        padding: 0;
+      }
+
+      .nav-links li a {
+        color: #fff;
+        text-decoration: none;
+      }
+
+      .nav-links li a:hover {
+        color: #ffd700;
+      }
+
+      .orden-container {
+        padding: 20px;
+      }
+
+      .orden-layout {
+        display: flex;
+        gap: 30px;
+      }
+
+      .calculadora {
+        background: #2f2f2f;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        width: 350px;
+      }
+
+      .pantalla {
+        background: #555;
+        border-radius: 8px;
+        padding: 12px;
+        margin-bottom: 20px;
+        min-height: 200px;
+      }
+
+      .producto-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #444;
+        padding: 6px 10px;
+        margin: 5px 0;
+        border-radius: 6px;
+      }
+
+      .producto-item input {
+        width: 40px;
+        text-align: center;
+        margin-right: 5px;
+      }
+
+      .total {
+        margin-top: 10px;
+        font-weight: bold;
+        font-size: 16px;
+        color: #ffd700;
+      }
+
+      .categorias {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 15px;
+        flex-wrap: wrap;
+      }
+
+      .categorias button {
+        background: #3a3a3a;
+        color: #fff;
+        border: 2px solid #ffd700;
+        border-radius: 10px;
+        padding: 10px 15px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+      }
+
+      .categorias button:hover {
+        border-color: #ff4444;
+        background: #444;
+        transform: scale(1.03);
+      }
+
+      #productosArea button {
+        display: block;
+        width: 100%;
+        margin: 5px 0;
+        padding: 12px;
+        border: 2px solid #ffd700;
+        border-radius: 10px;
+        background: #3a3a3a;
+        color: #fff;
+        font-weight: bold;
+        transition: all 0.3s ease;
+      }
+
+      #productosArea button:hover {
+        border-color: #ff4444;
+        background: #444;
+        transform: scale(1.03);
+      }
+
+      .btn-success {
+        background: #ffd700;
+        color: #000;
+        border: none;
+      }
+
+      .btn-success:hover {
+        background: #e6b800;
+      }
+
+      .btn-danger {
+        background: #ff4444;
+        border: none;
+      }
+
+      .btn-danger:hover {
+        background: #cc0000;
+      }
+
+      .alert-container {
+        position: fixed;
+        top: 80px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1055;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .alert {
+        background: #333;
+        color: #fff;
+        padding: 14px 28px;
+        border-radius: 8px;
+        font-weight: bold;
+        font-size: 17px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+        opacity: 0.95;
+        animation: fadeInOut 3s forwards;
+        text-align: center;
+        min-width: 250px;
+      }
+
+      .alert-success {
+        background: #28a745;
+        color: white;
+      }
+
+      .alert-error {
+        background: #dc3545;
+        color: white;
+      }
+
+      @keyframes fadeInOut {
+        0% {
+          opacity: 0;
+          transform: translateY(-15px);
+        }
+
+        10%,
+        90% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+
+        100% {
+          opacity: 0;
+          transform: translateY(-15px);
+        }
+      }
+
+      footer {
+        background: #2f2f2f;
+        color: #fff;
+        text-align: center;
+        padding: 10px;
+        border-top: 2px solid #ffd700;
+        margin-top: auto;
+      }
+
+      .btn-eliminar {
+        background: #ff4444;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 3px 8px;
+        margin-left: 8px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: background 0.3s ease;
+      }
+
+      .btn-eliminar:hover {
+        background: #cc0000;
+      }
+
+
+    </style>
+  </head>
+
+  <body>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="alert-container">
+      {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">
+        {{ message }}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <nav class="navbar">
+      <div class="logo">
+        <img src="{{ url_for('static', filename='img/logooo.png') }}" alt="Logo">
+        <span>Parrilla 51</span>
+      </div>
+
+      <ul class="nav-links">
+        <li><a href="{{ url_for('empleado.mesas_empleado') }}">Mesas</a></li>
+        <li><a href="{{ url_for('empleado.registrar_pedido') }}">Registrar</a></li>
+        <li><a href="{{ url_for('empleado.ordenes_empleado') }}">Órdenes</a></li>
+        <li><a href="{{ url_for('empleado.reservas_empleado') }}">Reservas</a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <div class="orden-container">
+        <h2>Orden para la Mesa {{ mesa }}</h2>
+        <div class="orden-layout">
+
+          <!-- CALCULADORA -->
+          <div class="calculadora">
+            <div class="pantalla">
+              <div id="listaProductos"></div>
+              <div class="total">Total: $<span id="total">0</span></div>
+            </div>
+            <button class="btn btn-success w-100" onclick="abrirPago()">Total a Pagar</button>
+            <button class="btn btn-danger w-100 mt-2" onclick="abrirModalVaciar()">Vaciar</button>
+          </div>
+
+          <!-- CATEGORÍAS + PRODUCTOS -->
+          <div style="flex:1;">
+            <div class="categorias">
+              {% for c in categorias %}
+              <button onclick="mostrarProductos({{ c.id_categoria }})">{{ c.nombre_categoria }}</button>
+              {% endfor %}
+            </div>
+            <div id="productosArea"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- MODAL PAGO -->
+    <div class="modal fade" id="modalPago" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content bg-dark text-light">
+          <div class="modal-header">
+            <h5 class="modal-title">Pago de la Orden</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <p>Total a pagar: <strong>$<span id="pagoTotal"></span></strong></p>
+            <input type="number" id="dineroCliente" class="form-control" placeholder="Dinero recibido">
+            <p class="mt-3">Cambio: <strong>$<span id="cambio"></span></strong></p>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-success" onclick="calcularCambio()">Calcular Cambio</button>
+            <button class="btn btn-danger" onclick="finalizarPago()">Finalizar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL CONFIRMACIÓN DE VACIAR -->
+    <div class="modal fade" id="modalConfirmarVaciar" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content bg-dark text-light">
+          <div class="modal-header border-warning">
+            <h5 class="modal-title text-warning">¿Seguro que deseas vaciar la orden?</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <p>Esta acción no se puede deshacer. ¿Estás seguro de que deseas eliminar todos los productos?</p>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button class="btn btn-danger" onclick="confirmarVaciar()">Confirmar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <!-- MODAL CONFIRMACIÓN DE PAGO -->
+    <div class="modal fade" id="modalPagoRealizado" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content bg-dark text-light">
+          <div class="modal-header">
+            <h5 class="modal-title">Pago Realizado</h5>
+          </div>
+          <div class="modal-body">
+            <p>El pago se ha realizado con éxito.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-success" data-bs-dismiss="modal">Aceptar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      © 2025 Parrilla 51 - Todos los derechos reservados
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      let lista = [];
+      let total = 0;
+
+      const productosPorCategoria = {
+        {% for c in categorias %}
+        {{ c.id_categoria }}: [
+          {% for p in productos if p.cod_categoria == c.id_categoria %}
+          { id_producto: {{ p.id_producto }}, nombre: "{{ p.nombre }}", precio: {{ p.precio }} },
+          {% endfor %}
+        ],
+        {% endfor %}
+      };
+
+      function mostrarProductos(idCat) {
+        const contenedor = document.getElementById("productosArea");
+        contenedor.innerHTML = "";
+        productosPorCategoria[idCat].forEach(p => {
+          const btn = document.createElement("button");
+          btn.textContent = `${p.nombre} - $${p.precio}`;
+          btn.onclick = () => agregarProducto(p.id_producto, p.nombre, p.precio);
+          contenedor.appendChild(btn);
+        });
+      }
+
+      function agregarProducto(id_producto, nombre, precio) {
+        let item = lista.find(p => p.id_producto === id_producto);
+        if (item) item.cantidad++;
+        else lista.push({ id_producto, nombre, precio, cantidad: 1 });
+        renderLista();
+      }
+
+      function eliminarProducto(nombre) {
+        lista = lista.filter(p => p.nombre !== nombre);
+        renderLista();
+      }
+
+      function cambiarCantidad(nombre, nuevaCantidad) {
+        let item = lista.find(p => p.nombre === nombre);
+        if (item && nuevaCantidad > 0) item.cantidad = nuevaCantidad;
+        renderLista();
+      }
+
+      function renderLista() {
+        const listaDiv = document.getElementById("listaProductos");
+        listaDiv.innerHTML = "";
+        total = 0;
+        lista.forEach(item => {
+          total += item.precio * item.cantidad;
+          const div = document.createElement("div");
+          div.className = "producto-item";
+          div.innerHTML = `
+            <span>${item.nombre}</span>
+            <input type="number" min="1" value="${item.cantidad}" onchange="cambiarCantidad('${item.nombre}', parseInt(this.value))">
+            <span>$${(item.precio * item.cantidad).toLocaleString()}</span>
+            <button class="btn-eliminar" onclick="eliminarProducto('${item.nombre}')">x</button>
+          `;
+          listaDiv.appendChild(div);
+        });
+        document.getElementById("total").textContent = total.toLocaleString();
+      }
+
+      function borrarTodo() {
+        lista = [];
+        total = 0;
+        renderLista();
+      }
+
+      function abrirModalVaciar() {
+        let modal = new bootstrap.Modal(document.getElementById("modalConfirmarVaciar"));
+        modal.show();
+      }
+
+      function confirmarVaciar() {
+        borrarTodo();
+        let modalEl = document.getElementById("modalConfirmarVaciar");
+        let modal = bootstrap.Modal.getInstance(modalEl);
+        modal.hide();
+      }
+
+      function abrirPago() {
+        let modal = new bootstrap.Modal(document.getElementById("modalPago"));
+        modal.show();
+        document.getElementById("pagoTotal").textContent = total.toLocaleString();
+      }
+
+      function calcularCambio() {
+        let dinero = parseFloat(document.getElementById("dineroCliente").value);
+        if (!isNaN(dinero) && dinero >= total) {
+          let cambio = dinero - total;
+          document.getElementById("cambio").textContent = cambio.toLocaleString();
+        } else {
+          alert("El dinero recibido es insuficiente o inválido.");
+        }
+      }
+
+      function finalizarPago() {
+        let dinero = parseFloat(document.getElementById("dineroCliente").value);
+        if (!isNaN(dinero) && dinero >= total) {
+          document.getElementById("productosInput").value = JSON.stringify(lista);
+          document.getElementById("dineroClienteInput").value = dinero;
+          document.getElementById("totalPago").value = total;
+          document.getElementById("formPago").submit();
+
+          let modalEl = document.getElementById("modalPago");
+          let modal = bootstrap.Modal.getInstance(modalEl);
+          modal.hide();
+
+          let modalPagoRealizado = new bootstrap.Modal(document.getElementById("modalPagoRealizado"));
+          modalPagoRealizado.show();
+
+          setTimeout(() => {
+            window.location.href = "{{ url_for('empleado.mesas_empleado') }}";
+          }, 7000);
+        }
+      }
+
+      // Ocultar alertas automáticamente después de 7 segundos
+      setTimeout(() => {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(a => a.remove());
+      }, 7000);
+    </script>
+
+    <!-- FORMULARIO OCULTO PARA ENVIAR LOS DATOS DEL PAGO -->
+
+    <form id="formPago" action="{{ url_for('empleado.orden_mesa', mesa_id=mesa) }}" method="POST" style="display: none;">
+      <input type="hidden" name="id_mesa" value="{{ mesa }}">
+      <input type="hidden" name="total" id="totalPago">
+      <input type="hidden" name="dinero_cliente" id="dineroClienteInput">
+      <input type="hidden" name="productos" id="productosInput">
+    </form>
+  </body>
+
+</html>

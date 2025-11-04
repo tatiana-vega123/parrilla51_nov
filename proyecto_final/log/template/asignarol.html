@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Asignar Rol y Estado</title>
+    <style>
+        body {
+            margin:0;
+            font-family:Arial, Helvetica, sans-serif;
+            background:#3a3a3a;
+            color:#fff;
+        }
+
+        /* ==================== NAVBAR ==================== */
+        .navbar {
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            background:#2f2f2f;
+            padding:10px 20px;
+        }
+        .navbar .brand {
+            display:flex;
+            align-items:center;
+            gap:10px;
+            font-size:22px;
+            font-weight:bold;
+            color:#ff4444;
+        }
+        .navbar .brand img {
+            width:40px;
+            height:auto;
+        }
+        .navbar .links {
+            display:flex;
+            gap:20px;
+        }
+        .navbar .links a {
+            color:#fff;
+            text-decoration:none;
+            font-size:16px;
+            transition:color 0.3s;
+        }
+        .navbar .links a:hover { color:#ffd700; }
+
+        /* ==================== CONTENIDO ==================== */
+        .contenido { padding:40px; }
+        h2 { margin-top:40px; color:#ffd700; }
+
+        /* ==================== TABLAS ==================== */
+        table {
+            width:100%;
+            border-collapse:collapse;
+            margin-top:20px;
+            background:#2f2f2f;
+        }
+        table th, table td {
+            border:1px solid #444;
+            padding:10px;
+            text-align:center;
+        }
+        table th { background:#444; }
+
+        /* ==================== BOTONES ==================== */
+        .btn {
+            background:#ffd700;
+            color:#000;
+            padding:6px 12px;
+            text-decoration:none;
+            border-radius:4px;
+            font-weight:bold;
+            margin:5px 0;
+            display:inline-block;
+            transition:background 0.3s;
+        }
+        .btn:hover { background:#ffcc00; }
+
+        .btn-edit { background:#00bcd4; color:#fff; }
+        .btn-edit:hover { background:#0097a7; }
+
+        .btn-delete { background:#ff4444; color:#fff; }
+        .btn-delete:hover { background:#cc0000; }
+
+        .btn-admin { background:#ffd700; color:#000; }
+        .btn-admin:hover { background:#ffcc00; }
+
+        .disabled {
+            color:#ccc;
+            font-style:italic;
+        }
+
+        /* ==================== MODAL ==================== */
+        .modal {
+            display:none;
+            position:fixed;
+            top:0; left:0;
+            width:100%; height:100%;
+            background:rgba(0,0,0,0.6);
+            justify-content:center;
+            align-items:center;
+            z-index:1000;
+        }
+        .modal-content {
+            background:#2f2f2f;
+            padding:20px;
+            border-radius:10px;
+            text-align:center;
+            width:320px;
+            color:#fff;
+            box-shadow:0 4px 12px rgba(0,0,0,0.7);
+        }
+        .modal-content h3 { margin-bottom:15px; color:#ffd700; }
+        .modal-content p { margin-bottom:20px; }
+        .modal-content button { margin:5px; }
+
+        footer {
+            margin-top:40px;
+            text-align:center;
+            padding:20px;
+            background:#2f2f2f;
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="brand">
+    <img src="{{ url_for('static', filename='image.png') }}" alt="">
+    Parrilla 51
+  </div>
+  <div class="links">
+    <a href="{{ url_for('admin.admin_dashboard') }}">Inicio</a>
+    <a href="{{ url_for('admin.admin_inventario') }}">Inventario</a>
+    <a href="{{ url_for('admin.admin_usuarios') }}">Asignación Rol</a>
+    <a href="{{ url_for('admin.admin_reservas') }}">Reservas</a>
+    <a href="{{ url_for('admin.admin_pedidos') }}">Pedidos</a>
+    <a href="{{ url_for('admin.admin_productos') }}">Productos</a>
+    <a href="{{ url_for('admin.admin_inventario') }}">Insumos</a>
+  </div>
+  <a href="{{ url_for('auth.logout') }}" class="btn">Salir</a>
+</nav>
+
+<!-- CONTENIDO -->
+<div class="contenido">
+    <h2>Gestión de Usuarios</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th><th>Usuario</th><th>Correo</th>
+                <th>Rol</th><th>Estado</th><th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for u in usuarios %}
+            <tr>
+                <td>{{ u.id_usuario }}</td>
+                <td>{{ u.nombre }} {{ u.apellido }}</td>
+                <td>{{ u.correo }}</td>
+                <td>{{ u.rol }}</td>
+                <td>{{ u.estado }}</td>
+                <td>
+                    {% if u.rol == "admin" %}
+                        <span class="disabled">Administrador fijo</span>
+                    {% else %}
+                        {% if u.estado == "activo" %}
+                            <a href="{{ url_for('admin.admin_cambiar_estado_usuario', id_usuario=u.id_usuario, nuevo_estado='inactivo') }}" class="btn btn-delete">Desactivar</a>
+                        {% else %}
+                            <a href="{{ url_for('admin.admin_cambiar_estado_usuario', id_usuario=u.id_usuario, nuevo_estado='activo') }}" class="btn">Activar</a>
+                        {% endif %}
+
+                        <a href="{{ url_for('admin.admin_cambiar_rol_usuario', id_usuario=u.id_usuario, nuevo_rol='empleado') }}" class="btn btn-edit">Empleado</a>
+                        <a href="{{ url_for('admin.admin_cambiar_rol_usuario', id_usuario=u.id_usuario, nuevo_rol='cliente') }}" class="btn btn-edit">Cliente</a>
+                        <button class="btn btn-admin" onclick="abrirModal({{ u.id_usuario }})">Administrador</button>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- MODAL -->
+<div class="modal" id="modalConfirmacion">
+    <div class="modal-content">
+        <h3>Confirmación</h3>
+        <p>¿Deseas convertir este usuario en <b>Administrador</b>?</p>
+        <button id="confirmarBtn" class="btn btn-admin">Sí, convertir</button>
+        <button onclick="cerrarModal()" class="btn btn-delete">Cancelar</button>
+    </div>
+</div>
+
+<script>
+    let usuarioIdSeleccionado = null;
+
+    function abrirModal(idUsuario) {
+        usuarioIdSeleccionado = idUsuario;
+        document.getElementById("modalConfirmacion").style.display = "flex";
+    }
+    function cerrarModal() {
+        document.getElementById("modalConfirmacion").style.display = "none";
+        usuarioIdSeleccionado = null;
+    }
+    document.getElementById("confirmarBtn").addEventListener("click", function() {
+        if (usuarioIdSeleccionado) {
+            window.location.href = `/admin/usuarios/rol/${usuarioIdSeleccionado}/admin`;
+        }
+    });
+</script>
+
+</body>
+</html>

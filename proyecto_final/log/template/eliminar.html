@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirmar eliminación</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            text-align: center;
+            padding: 50px;
+        }
+        .box {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            display: inline-block;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+        h2 {
+            margin-bottom: 20px;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        .btn-confirm {
+            background-color: #e74c3c;
+            color: white;
+        }
+        .btn-cancel {
+            background-color: #3498db;
+            color: white;
+        }
+        .btn:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>¿Estás seguro que deseas eliminar este {{ tipo }}?</h2>
+        <form action="{{ url }}" method="POST">
+            <button type="submit" class="btn btn-confirm">Sí, eliminar</button>
+            <a href="{{ url_for('inventario') }}" class="btn btn-cancel">Cancelar</a>
+        </form>
+    </div>
+</body>
+</html>

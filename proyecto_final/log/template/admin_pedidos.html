@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Pedidos - Administrador</title>
+    <style>
+        body {
+            font-family: "Segoe UI", Tahoma, sans-serif;
+            background: #2f2f2f;
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+        }
+        h2 {
+            text-align: center;
+            color: #ffd700;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: #3a3a3a;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #555;
+        }
+        th {
+            background: #444;
+        }
+        .estado {
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 6px;
+        }
+        .pendiente { background: #ffa500; color: #000; }
+        .entregado { background: #28a745; color: #fff; }
+        .cancelado { background: #dc3545; color: #fff; }
+
+        .acciones button {
+            padding: 6px 10px;
+            margin: 2px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .btn-pendiente { background: #ffa500; color: #000; }
+        .btn-entregado { background: #28a745; color: #fff; }
+        .btn-cancelado { background: #dc3545; color: #fff; }
+
+        a.volver {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+            color: #ffd700;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <h2>📋 Pedidos Registrados</h2>
+
+    {% if pedidos %}
+    <table>
+        <thead>
+            <tr>
+                <th>ID Pedido</th>
+                <th>Cliente</th>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th>Total</th>
+                <th>Estado</th>
+                <th>Tipo Entrega</th>
+                <th>Mesa</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in pedidos %}
+            <tr>
+                <td>{{ p.id_pedido }}</td>
+                <td>{{ p.nombre }} {{ p.apellido }}</td>
+                <td>{{ p.fecha }}</td>
+                <td>{{ p.hora }}</td>
+                <td>${{ "{:,.0f}".format(p.total).replace(",", ".") }}</td>
+                <td class="estado {{ p.estado }}">{{ p.estado }}</td>
+                <td>{{ p.tipo_entrega }}</td>
+                <td>{{ p.cod_mesa if p.cod_mesa else "Domicilio" }}</td>
+                <td class="acciones">
+                    <!-- ✅ Corregido: agregado prefijo 'admin.' -->
+                    <a href="{{ url_for('admin.cambiar_estado_pedido', id_pedido=p.id_pedido, nuevo_estado='pendiente') }}">
+                        <button class="btn-pendiente">⏳ Pendiente</button>
+                    </a>
+                    <a href="{{ url_for('admin.cambiar_estado_pedido', id_pedido=p.id_pedido, nuevo_estado='entregado') }}">
+                        <button class="btn-entregado">✅ Entregado</button>
+                    </a>
+                    <a href="{{ url_for('admin.cambiar_estado_pedido', id_pedido=p.id_pedido, nuevo_estado='cancelado') }}">
+                        <button class="btn-cancelado">❌ Cancelado</button>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p>No hay pedidos registrados.</p>
+    {% endif %}
+
+    <!-- ✅ Corregido: agregado prefijo 'admin.' -->
+    <a href="{{ url_for('admin.admin_dashboard') }}" class="volver">⬅️ Volver al Dashboard</a>
+</body>
+</html>

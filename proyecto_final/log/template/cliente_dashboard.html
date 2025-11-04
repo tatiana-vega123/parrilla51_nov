@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel Cliente</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #3a3a3a;
+      color: #f0f0f0;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+
+    .header-container {
+      background-color: #2f2f2f;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    }
+
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 30px;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo {
+      width: 80px;
+      height: auto;
+      border-radius: 8px;
+    }
+
+    .nombre-logo {
+      font-size: 22px;
+      color: red;
+      margin: 0;
+      font-weight: bold;
+    }
+
+    .navbar-links {
+      display: flex;
+      gap: 20px;
+      margin-right: -1000px;
+    }
+
+    .navbar a {
+      color: #f0f0f0 !important;
+      text-decoration: none !important;
+    }
+
+    .navbar a:hover {
+      color: #f1c40f !important;
+    }
+
+    .profile-icon img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      filter: invert(1);
+    }
+
+    .content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      text-align: center;
+      font-size: 1.5rem;
+      color: #f7f4f4;
+      text-shadow: -1px -1px 0 #f95252;
+    }
+
+    .content ul {
+      list-style: none;
+      padding: 0;
+      margin: 20px 0;
+      display: flex;
+      gap: 30px;
+    }
+
+    .content ul li a {
+      text-decoration: none;
+      color: #f2f0f4 !important;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    /* --- Efecto para la imagen de la carne --- */
+    .image-container {
+      position: relative;
+      margin-top: 10px;
+      max-width: 600px;
+      width: 100%;
+      border-radius: 30%;
+      overflow: hidden;
+    }
+
+    .image-container img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 30%;
+    }
+
+    .shine {
+      position: absolute;
+      top: 0;
+      left: -50%;
+      width: 20%;
+      height: 100%;
+      background: linear-gradient(
+      120deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.5) 50%,
+        rgba(255, 255, 255, 0) 100%
+      );
+      transform: skewX(-20deg);
+      animation: shine 2.5s infinite;
+      pointer-events: none;
+    }
+
+    @keyframes shine {
+      0% { left: -50%; }
+      100% { left: 120%; }
+    }
+
+    .info-box {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px;
+    padding: 10px;
+    background: #212222;
+    color: white;
+    border-radius: 10px;
+}
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <div class="header-container">
+    <nav class="navbar">
+      
+      <!-- Logo y nombre -->
+      <div class="header">
+        <img src="{{ url_for('static', filename='img/logooo.png') }}" alt="Logo" class="logo">
+        <h1 class="nombre-logo">Parrilla 51</h1>
+      </div>
+
+      <!-- Links del menú -->
+      <div class="navbar-links">
+        <a href="{{ url_for('cliente_reservar_form') }}">Reservar</a>
+        <a href="{{ url_for('cliente_productos') }}">Ver Menú</a>
+        <a href="{{ url_for('cliente_carrito') }}">Ir al carrito</a>
+        <a href="{{ url_for('ver_reservas') }}">Mis reservas</a>
+        <a href="{{ url_for('ver_pedidos') }}">Mis Pedidos</a>
+      </div>
+
+      <!-- Ícono del perfil -->
+      <div class="profile-icon">
+        <a href="{{ url_for('cliente_dashboard') }}">
+          <img src="{{ url_for('static', filename='img/perfil.png') }}" alt="Perfil">
+        </a>
+      </div>
+
+    </nav>
+  </div>
+
+  <!-- Texto de bienvenida en el centro -->
+  <div class="content">
+    <h1>Bienvenido Cliente al restaurante Parrilla 51 🥩</h1>
+    <p>Carne 100% colombiana</p>
+
+    <div class="image-container">
+      <img src="{{ url_for('static', filename='img/churrasco.jpg') }}" alt="Imagen bienvenida">
+      <div class="shine"></div>
+    </div>
+  </div>
+
+  <!-- Pie de pagina -->
+<footer style="background-color: #1c1d1e; color: white; padding: 20px 0; text-align: center;">
+
+    <section id="seccion-inicio">
+    <div class="historia">
+        <h2>Nuestra Historia</h2>
+        <p>
+            Parrilla 51 es un restaurante fundado en Bogotá en la localidad de Chapinero, en el año 1997,
+            el cual se destaca por su carne 100% colombiana, en el cual tienes que probar su delicioso churrasco.
+        </p>
+    </div>
+        
+        <div class="info-box">
+            <div>
+            <h3>Horarios</h3>
+            <p>Lunes a Domingo 11:30 A.M. - 4:30 P.M.</p>
+        </div>
+
+        <div>
+            <h3>Datos</h3>
+            <p>calle. 51 #16a - 71 Bogotá, Colombia</p>
+            <p>📞 2487990</p>
+        </div>
+        </div>
+    </section>
+</footer>
+
+</body>
+</html>

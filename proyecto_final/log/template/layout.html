@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}Parrilla 51{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="logo">
+      <img src="{{ url_for('static', filename='img/logooo.png') }}" alt="Logo">
+      <span>Parrilla 51</span>
+    </div>
+
+    <ul>
+      <li><a href="{{ url_for('mesas_empleado') }}">Mesas</a></li>
+      <li><a href="{{ url_for('registrar_empleado') }}">Registrar</a></li>
+      <li><a href="{{ url_for('ordenes_empleado') }}">Órdenes</a></li>
+      <li><a href="{{ url_for('reservas_empleado') }}">Reservas</a></li>
+    </ul>
+  </nav>
+
+  <!-- CONTENIDO -->
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

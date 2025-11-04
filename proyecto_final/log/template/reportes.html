@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Reportes - Parrilla 51</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    /* ==================== ESTILOS GENERALES ==================== */
+    :root{
+      --bg:#5f5f5f;
+      --panel:#4a4a4a;
+      --panel-alt:#6a6a6a;
+      --text:#f0f0f0;
+      --accent:#f1c40f;
+      --card-shadow: 0 2px 6px rgba(0,0,0,0.4);
+      --radius:8px;
+    }
+    body{
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin:0;
+      padding:0;
+    }
+
+    /* HEADER / NAV */
+    .header-container{
+      background-color: var(--panel);
+      border-bottom: 2px solid var(--accent);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }
+    .navbar{
+      display:flex;
+      align-items:center;
+      padding:12px 30px;
+      gap:18px;
+      flex-wrap:wrap;
+    }
+    .header{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-right:auto;
+    }
+    .header .logo{
+      width:46px;
+      height:auto;
+      border-radius:8px;
+    }
+    .header .nombre-logo{
+      font-size:22px;
+      color: var(--accent);
+      margin:0;
+    }
+    .navbar a{
+      color:var(--text);
+      text-decoration:none;
+      font-weight:600;
+    }
+    .navbar a:hover{ color:var(--accent); }
+
+    main{ padding:20px; max-width:1200px; margin:0 auto; }
+
+    h2{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin:28px 0 12px;
+      font-size:20px;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin-bottom:18px;
+      box-shadow: var(--card-shadow);
+      background: var(--bg);
+      border-radius: var(--radius);
+      overflow:hidden;
+    }
+    thead{ background: var(--panel); color:var(--text); }
+    thead th{ padding:12px; text-align:center; font-weight:700; font-size:13px; text-transform:uppercase; }
+    tbody td{ padding:12px; border-bottom:1px solid rgba(0,0,0,0.4); text-align:center; font-size:14px; }
+    tbody tr:nth-child(even){ background: var(--panel-alt); }
+    tbody tr:hover{ background: #505050; }
+
+    .estado{
+      display:inline-block;
+      padding:4px 10px;
+      border-radius:12px;
+      font-size:13px;
+      font-weight:700;
+      color:#fff;
+      text-transform:capitalize;
+    }
+
+    /* Footer / buttons */
+    .actions{
+      text-align:right;
+      margin:18px 0 36px;
+    }
+    .btn{
+      display:inline-block;
+      padding:8px 15px;
+      color:#fff;
+      text-decoration:none;
+      border-radius:6px;
+      margin-left:8px;
+      font-weight:700;
+    }
+    .btn-pdf{ background:#e74c3c; }
+    .btn-xlsx{ background:#27ae60; }
+
+    footer{
+      text-align:center;
+      padding:18px;
+      background:var(--panel);
+      color:var(--text);
+      margin-top:40px;
+      border-top:2px solid var(--accent);
+    }
+
+    /* Responsive */
+    @media (max-width:900px){
+      thead th, tbody td{ font-size:12px; padding:8px; }
+      .header .nombre-logo{ font-size:18px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <div class="header-container">
+    <nav class="navbar">
+      <div class="header">
+        <img src="{{ url_for('static', filename='image.png') }}" alt="Logo Parrilla 51" class="logo">
+        <h1 class="nombre-logo">Parrilla 51</h1>
+      </div>
+
+      <a href="{{ url_for('index') }}">Inicio</a>
+      <a href="{{ url_for('inventario') }}">📦 Inventario</a>
+      <a href="{{ url_for('asignarol') }}">👤 Asignación Rol</a>
+      <a href="{{ url_for('consultar_reservas') }}">📅 Consultar Reservas</a>
+      <a href="{{ url_for('consultaVentas') }}">💰 Consultar Ventas</a>
+      <a href="{{ url_for('consulta_P') }}">🍔 Consultar Productos</a>
+      <a href="{{ url_for('consulta_Y') }}">🥕 Consultar Insumos</a>
+      <a href="{{ url_for('reportes') }}">📊 Reportes</a>
+    </nav>
+  </div>
+
+  <main>
+    <!-- Pedidos Restaurante -->
+    <h2>🍽️ Pedidos en Restaurante</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID Pedido</th>
+          <th>Cliente</th>
+          <th>Fecha</th>
+          <th>Hora</th>
+          <th>Total</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if pedidos_restaurante %}
+          {% for p in pedidos_restaurante %}
+            <tr>
+              <td>{{ p.id_pedido|default('—') }}</td>
+
+              <td style="text-align:left;">
+                {% if p.nombre is defined and p.apellido is defined %}
+                  {{ p.nombre }} {{ p.apellido }}
+                {% elif p.cliente is defined %}
+                  {{ p.cliente }}
+                {% elif p.nombre_completo is defined %}
+                  {{ p.nombre_completo }}
+                {% else %}
+                  —
+                {% endif %}
+              </td>
+
+              <td>{{ p.fecha|default('') }}</td>
+              <td>{{ p.hora|default('') }}</td>
+              <td>${{ "{:,.0f}".format(p.total|default(0)) }}</td>
+
+              <td>
+                {% set est = (p.estado|default(''))|lower %}
+                <span class="estado" style="background:
+                  {% if est in ['entregado','aceptada','aceptado','confirmado'] %}#28a745
+                  {% elif est in ['cancelado','cancelada'] %}#e74c3c
+                  {% elif est in ['pendiente','en preparacion','en preparación'] %}#f39c12
+                  {% else %}#6c7a89
+                  {% endif %};
+                ">
+                  {{ p.estado|default('—') }}
+                </span>
+              </td>
+            </tr>
+          {% endfor %}
+        {% else %}
+          <tr><td colspan="6">No hay pedidos en restaurante</td></tr>
+        {% endif %}
+      </tbody>
+    </table>
+
+    <!-- Pedidos Domicilio -->
+    <h2>🚚 Pedidos a Domicilio</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID Pedido</th>
+          <th>Cliente</th>
+          <th>Fecha</th>
+          <th>Hora</th>
+          <th>Total</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if pedidos_domicilio %}
+          {% for p in pedidos_domicilio %}
+            <tr>
+              <td>{{ p.id_pedido|default('—') }}</td>
+
+              <td style="text-align:left;">
+                {% if p.nombre is defined and p.apellido is defined %}
+                  {{ p.nombre }} {{ p.apellido }}
+                {% elif p.cliente is defined %}
+                  {{ p.cliente }}
+                {% elif p.nombre_completo is defined %}
+                  {{ p.nombre_completo }}
+                {% else %}
+                  —
+                {% endif %}
+              </td>
+
+              <td>{{ p.fecha|default('') }}</td>
+              <td>{{ p.hora|default('') }}</td>
+              <td>${{ "{:,.0f}".format(p.total|default(0)) }}</td>
+
+              <td>
+                {% set est = (p.estado|default(''))|lower %}
+                <span class="estado" style="background:
+                  {% if est in ['entregado','aceptada','aceptado','confirmado'] %}#28a745
+                  {% elif est in ['cancelado','cancelada'] %}#e74c3c
+                  {% elif est in ['pendiente','en preparacion','en preparación'] %}#f39c12
+                  {% else %}#6c7a89
+                  {% endif %};
+                ">
+                  {{ p.estado|default('—') }}
+                </span>
+              </td>
+            </tr>
+          {% endfor %}
+        {% else %}
+          <tr><td colspan="6">No hay pedidos a domicilio</td></tr>
+        {% endif %}
+      </tbody>
+    </table>
+
+    <!-- Reservas -->
+    <h2>📅 Reservas</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID Reserva</th>
+          <th>Fecha</th>
+          <th>Hora</th>
+          <th>Cantidad Personas</th>
+          <th>Estado</th>
+          <th>Mesa</th>
+          <th>Capacidad</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if reservas %}
+          {% for r in reservas %}
+            <tr>
+              <td>{{ r.id_reserva|default('—') }}</td>
+              <td>{{ r.fecha|default('') }}</td>
+              <td>{{ r.hora|default('') }}</td>
+
+              <td>
+                {{ r.cant_personas|default(r.personas|default(r.cantidad|default('—'))) }}
+              </td>
+
+              <td>
+                {% set rest = (r.estado|default(''))|lower %}
+                <span class="estado" style="background:
+                  {% if rest in ['aceptada','aceptado','confirmado','disponible'] %}#28a745
+                  {% elif rest in ['cancelada','cancelado','no disponible'] %}#e74c3c
+                  {% else %}#6c7a89
+                  {% endif %};
+                ">
+                  {{ r.estado|default('—') }}
+                </span>
+              </td>
+
+              <td>{{ r.id_mesa|default(r.mesa|default(r.cod_mesa|default('—'))) }}</td>
+              <td>{{ r.capacidad|default('—') }}</td>
+            </tr>
+          {% endfor %}
+        {% else %}
+          <tr><td colspan="7">No hay reservas</td></tr>
+        {% endif %}
+      </tbody>
+    </table>
+
+    <!-- Inventario bajo -->
+    <h2>⚠️ Inventario bajo (Insumos)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID Insumo</th>
+          <th>Nombre</th>
+          <th>Cantidad</th>
+          <th>Precio</th>
+          <th>Estado Stock</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if stock_bajo %}
+          {% for i in stock_bajo %}
+            <tr>
+              <td>{{ i.id_insumo|default(i.id_producto|default('—')) }}</td>
+              <td style="text-align:left;">{{ i.nombre|default('—') }}</td>
+              <td>{{ i.cantidad|default('0') }}</td>
+              <td>
+                {% if i.precio is defined and i.precio is not none %}
+                  ${{ "{:,.0f}".format(i.precio) }}
+                {% else %}
+                  —
+                {% endif %}
+              </td>
+              <td>
+                {% set st = (i.estado_stock|default(''))|lower %}
+                <span class="estado" style="background:
+                  {% if st in ['sin stock','stock bajo'] %}#e67e22
+                  {% elif st in ['disponible','en stock'] %}#28a745
+                  {% else %}#6c7a89
+                  {% endif %};
+                ">
+                  {{ i.estado_stock|default('—') }}
+                </span>
+              </td>
+            </tr>
+          {% endfor %}
+        {% else %}
+          <tr><td colspan="5">No hay insumos con stock bajo</td></tr>
+        {% endif %}
+      </tbody>
+    </table>
+
+    <div class="actions">
+      <a href="{{ url_for('reportes_pdf') }}" class="btn btn-pdf">📄 Exportar PDF</a>
+      <a href="{{ url_for('reportes_excel') }}" class="btn btn-xlsx">📊 Exportar Excel</a>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2025 Parrilla 51 - Todos los derechos reservados
+  </footer>
+</body>
+</html>

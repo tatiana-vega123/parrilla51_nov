@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Menú</title>
+    <style>
+        body { font-family: "Segoe UI", Tahoma, sans-serif; background: #3a3a3a; color: #fff; margin: 0; }
+        .container { padding: 20px; }
+        h2 { text-align: center; color: #ffd700; }
+        .productos { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-top: 30px; }
+        .card { background: #2f2f2f; border-radius: 10px; padding: 15px; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.4); }
+        .card img {
+            width: 100%;
+            height: 200px;       
+            object-fit: cover;    
+            border-radius: 8px;
+        }
+
+        .btn { margin-top: 10px; display: block; padding: 10px; background: #ffd700; color: #000; font-weight: bold; border-radius: 6px; text-decoration: none; }
+        .btn:hover { background: #e0b800; }
+        a.volver { display: block; margin-top: 20px; text-align: center; color: #ff4444; text-decoration: none; }
+
+                .filtros {
+            text-align: center;       
+            margin: 30px 0 20px 0;    
+        }
+
+            .filtros button {
+                background: transparent;   
+                color: #ffd700;            
+                border: 2px solid #ffd700; 
+                border-radius: 25px;       
+                padding: 14px 20px;        
+                margin: 8px;               
+                font-size: 16px;           
+                font-weight: bold;         
+                cursor: pointer;           
+                transition: all 0.3s ease; 
+            }
+
+            .filtros button:hover {
+                background: #ffd700;       
+                color: #000;               
+                transform: scale(1.1);     
+            }
+
+            #imagen-fondo {
+                    display: flex;
+                    justify-content: center;
+                    margin-top: 100px;   
+                }
+
+                #imagen-fondo img {
+                    width: 600px;       
+                    height: auto;        
+                    opacity: 0.3;
+                }
+
+                #imagen-fondo.oculto {
+                    display: none !important;
+                }
+
+                p { text-align:center; margin-top:15px; }
+                a {
+                text-decoration:none;
+                color:#ff4444;
+                font-weight:bold;
+                transition:color 0.2s;
+                font-size: 150%;
+                }
+                a:hover { color:#cc0000; }
+
+
+                </style>
+</head>
+<body>
+
+    <h4 style="text-align: center;"> Todos nuestros cortes serán servidos con dos (2) acompañamientos</h4>
+    <p>Bebida no incluida</p>
+     <!-- Botones para filtrar -->
+        <div class="filtros">
+            <button onclick="filtrar('cerdo')">Cerdo</button>
+            <button onclick="filtrar('res')">Res</button>
+            <button onclick="filtrar('pollo')">Pollo</button>
+            <button onclick="filtrar('plato del dia')">Plato del día</button>
+            <button onclick="filtrar('acompañamientos')">Acompañamientos</button>
+            <button onclick="filtrar('entradas')">Entradas</button>
+            <button onclick="filtrar('platos combinados')">Platos combinados</button>
+            <button onclick="filtrar('cortes gruesos')">Cortes gruesos</button>
+            <button onclick="filtrar('bebidas')">Bebidas</button>
+            <button onclick="filtrar('adicionales')">Adicionales</button>
+        </div>
+        <div id="imagen-fondo">
+    <img src="{{ url_for('static', filename='img/Vaca.png') }}" alt="vaca">
+</div>
+
+
+        <!-- Lista de productos -->
+        <div class="productos">
+            {% for p in productos %}
+            <div class="card producto-card" 
+                 data-categoria="{{ p.get('nombre_categoria', 'sin categoría') | trim | lower }}"
+                 style="display:none;">   
+
+                {% if p.imagen %}
+                    <img src="{{ url_for('static', filename='img/' ~ p.imagen) }}" alt="{{ p.nombre }}">
+                {% else %}
+                    <img src="{{ url_for('static', filename='no-image.png') }}" alt="{{ p.nombre }}">
+                {% endif %}
+
+
+                <h3>{{ p.nombre }}</h3>
+                <p><strong>Precio:</strong> COP ${{ "{:,.0f}".format(p.precio).replace(",", ".") }}</p>
+                <p><strong>Categoría:</strong> {{ p.get('nombre_categoria', 'Sin categoría') }}</p>
+                <p><strong>Descripción:</strong> {{ p.get('descripcion', 'Sin descripción') }}</p>
+
+               <form method="POST" action="{{ url_for('cliente.agregar_carrito', id_producto=p.id_producto) }}">
+
+                    <input type="number" name="cantidad" value="1" min="1" style="width:60px;">
+                    <button type="submit" class="btn">🛒 Agregar</button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+
+    <script>
+        function filtrar(categoria) {
+            
+            localStorage.setItem("filtroSeleccionado", categoria);
+            document.querySelectorAll(".producto-card").forEach(el => {
+                if (el.dataset.categoria === categoria) {
+                    el.style.display = "block";
+                } else {
+                    el.style.display = "none";
+                }
+            });
+            
+            document.getElementById("imagen-fondo").classList.add("oculto");
+        }
+
+        window.onload = function() {
+            
+            localStorage.removeItem("filtroSeleccionado");
+            
+            document.querySelectorAll(".producto-card").forEach(el => {
+                el.style.display = "none";
+            });
+
+            document.getElementById("imagen-fondo").classList.remove("oculto");
+        }
+</script>
+
+
+<p><a href="{{ url_for('dashboard.cliente_dashboard') }}">Volver</a></p>
+
+</body>
+</html>

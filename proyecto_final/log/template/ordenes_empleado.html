@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Órdenes</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #3a3a3a;
+        color: #f0f0f0;
+        margin: 0;
+        padding: 0;
+      }
+
+      /* ==================== NAVBAR ==================== */
+      .navbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #2f2f2f;
+        padding: 12px 30px;
+        color: #fff;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 22px;
+        font-weight: bold;
+        color: #ff4444;
+      }
+
+      .logo img {
+        height: 40px;
+      }
+
+      .nav-links {
+        list-style: none;
+        display: flex;
+        gap: 25px;
+        margin: 0;
+        padding: 0;
+      }
+
+      .nav-links li {
+        cursor: pointer;
+        font-weight: bold;
+        color: #fff;
+        transition: color 0.3s;
+      }
+
+      .nav-links li a {
+        color: #fff;
+        text-decoration: none;
+      }
+
+      .nav-links li a:hover {
+        color: #ffd700;
+      }
+
+      .ordenes-container {
+        padding: 20px;
+      }
+
+      .ordenes-container h2 {
+        text-align: center;
+        color: #ffd700;
+        margin-bottom: 20px;
+      }
+
+      .ordenes-layout {
+        display: flex;
+        gap: 30px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .orden-col {
+        flex: 1 1 300px;
+      }
+
+      .orden-col h3 {
+        text-align: center;
+        color: #ff4444;
+        margin-bottom: 15px;
+      }
+
+      .cards {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .card {
+        background: #4a4a4a;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+        transition: transform 0.2s;
+      }
+
+      .card:hover {
+        transform: translateY(-4px);
+      }
+
+      .card h4 {
+        margin: 0 0 10px;
+        color: #ffd700;
+      }
+
+      .card p {
+        margin: 4px 0;
+      }
+
+      .estado {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 6px;
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 8px;
+        user-select: none;
+      }
+
+      .estado.pendiente {
+        background: #f1c40f;
+        color: #333;
+      }
+
+      .estado.entregado {
+        background: #2ecc71;
+        color: #fff;
+      }
+
+      footer {
+        background: #2f2f2f;
+        color: #fff;
+        text-align: center;
+        padding: 10px;
+        border-top: 2px solid #ffd700;
+        margin-top: auto; 
+      }
+    </style>
+  </head>
+  <body>
+
+      <nav class="navbar">
+      <div class="logo">
+          <img src="{{ url_for('static', filename='img/logooo.png') }}" alt="Logo">
+          <span>Parrilla 51</span>
+      </div>
+
+      <ul class="nav-links">
+          <li><a href="{{ url_for('empleado.mesas_empleado') }}">Mesas</a></li>
+          <li><a href="{{ url_for('empleado.registrar_pedido') }}">Registrar</a></li>
+          <li><a href="{{ url_for('empleado.ordenes_empleado') }}">Órdenes</a></li>
+          <li><a href="{{ url_for('empleado.reservas_empleado') }}">Reservas</a></li>
+      </ul>
+
+      </nav>
+
+  <div class="ordenes-container">
+    <h2>Gestión de Órdenes</h2>
+    <div class="ordenes-layout">
+
+      <div class="orden-col">
+        <h3>Recoger</h3>
+        <div class="cards" id="recoger">
+          {% for orden in ordenes %}
+          {% if orden.tipo_entrega == 'restaurante' or (orden.tipo_entrega == '' and orden.cod_mesa and orden.cod_mesa > 0) %}
+            <div class="card">
+              <h4>Orden #{{ orden.id_pedido }}</h4>
+              <p><strong>Mesa:</strong> {{ orden.cod_mesa }}</p>
+              <p><strong>Cliente ID:</strong> {{ orden.cod_usuario }}</p>
+              <p><strong>Teléfono:</strong> {{ orden.telefono }}</p>
+              <p><strong>Total:</strong> ${{ orden.total }}</p>
+              <span class="estado {% if orden.estado=='pendiente' %}pendiente{% elif orden.estado=='entregado' %}entregado{% else %}pendiente{% endif %}" 
+              data-id="{{ orden.id_pedido }}" 
+              onclick="cambiarEstado(this, '{{ orden.id_pedido }}')">
+          {{ orden.estado }}
+        </span>
+      </div>
+    {% endif %}
+  {% endfor %}
+        </div>
+      </div>
+
+      <div class="orden-col">
+        <h3>Domicilio</h3>
+        <div class="cards" id="domicilio">
+          {% for orden in ordenes if orden.tipo_entrega == 'domicilio' %}
+            <div class="card">
+              <h4>Orden #{{ orden.id_pedido }}</h4>
+              <p><strong>Cliente ID:</strong> {{ orden.cod_usuario }}</p>
+              <p><strong>Teléfono:</strong> {{ orden.telefono }}</p>
+              <p><strong>Dirección:</strong> {{ orden.direccion }}</p>
+              <p><strong>Total:</strong> ${{ orden.total }}</p>
+              <span class="estado {% if orden.estado=='pendiente' %}pendiente{% elif orden.estado=='entregado' %}entregado{% else %}pendiente{% endif %}" 
+                onclick="cambiarEstado(this, '{{ orden.id_pedido }}')">
+            {{ orden.estado }}
+          </span>
+
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    function cambiarEstado(el, idPedido) {
+      let nuevoEstado = "";
+
+      if (el.classList.contains("pendiente")) {
+        el.classList.remove("pendiente");
+        el.classList.add("entregado");
+        el.textContent = "entregado";
+        nuevoEstado = "entregado";
+      } else {
+        el.classList.remove("entregado");
+        el.classList.add("pendiente");
+        el.textContent = "pendiente";
+        nuevoEstado = "pendiente";
+      }
+
+      //  Enviar actualización al backend
+      fetch(`/actualizar_estado/${idPedido}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ estado: nuevoEstado })
+      })
+      .then(res => res.json())
+      .then(data => {
+        console.log("Respuesta del servidor:", data);
+      })
+      .catch(err => console.error("Error:", err));
+    }
+  </script>
+      <footer>
+        © 2025 Parrilla 51 - Todos los derechos reservados
+      </footer>
+
+  </body>
+</html>

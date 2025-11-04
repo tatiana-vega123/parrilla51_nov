@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mesas Parrilla 51</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+  <style>
+    /* ==================== RESET ==================== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* ==================== ESTILOS GENERALES ==================== */
+    html,
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #3a3a3a;
+      color: #f0f0f0;
+      overflow-x: hidden;
+      width: 100%;
+      height: 100%;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ==================== WRAPPER ==================== */
+    .wrapper {
+      display: flex;
+      flex-direction: column;
+      max-width: 100%;
+      overflow-x: hidden;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* ==================== NAVBAR ==================== */
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #2f2f2f;
+      padding: 12px 30px;
+      color: #fff;
+      width: 100%;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 22px;
+      font-weight: bold;
+      color: #ff4444;
+    }
+
+    .logo img {
+      height: 40px;
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 25px;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nav-links li {
+      cursor: pointer;
+      font-weight: bold;
+      color: #fff;
+      transition: color 0.3s;
+    }
+
+    .nav-links li a {
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .nav-links li a:hover {
+      color: #ffd700;
+    }
+
+    /* ==================== BOTONES ==================== */
+    button,
+    a.btn {
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .zona-btn {
+      background: #ffd700;
+      color: #000;
+      border: none;
+      font-size: 16px;
+      margin: 20px 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    .zona-btn:hover {
+      background: #e6b800;
+    }
+
+    /* ==================== GRID DE MESAS ==================== */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 15px;
+      padding: 20px;
+      width: 100%;
+      max-width: 100%;
+      margin: auto;
+      overflow-x: hidden;
+    }
+
+    .mesa {
+      background: #2f2f2f;
+      border-radius: 8px;
+      padding: 30px;
+      text-align: center;
+      font-size: 20px;
+      font-weight: bold;
+      transition: transform 0.2s, background 0.2s, border-color 0.3s;
+      border: 2px solid #ffd700;
+      user-select: none;
+    }
+
+    .mesa:hover {
+      background: #444;
+      transform: scale(1.05);
+      border-color: #ff4444;
+    }
+
+    .mesa.seleccionada {
+      background: #555;
+      border-color: #ff4444;
+    }
+
+    /* === MESA DORADA (clic sostenido) === */
+    .mesa.dorada {
+      background: #ffd700;
+      color: #000;
+      border-color: #ffd700;
+    }
+
+    /* ==================== FOOTER ==================== */
+    footer {
+      background: #2f2f2f;
+      color: #fff;
+      text-align: center;
+      padding: 11.5px;
+      border-top: 2px solid #ffd700;
+      margin-top: auto;
+    }
+
+    .zona {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 20px 0;
+    }
+
+    /* === ALERTAS FLASK CENTRADAS === */
+    .alert-container {
+      position: fixed;
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1055;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .alert {
+      background: #333;
+      color: #fff;
+      padding: 14px 28px;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 17px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+      opacity: 0.95;
+      animation: fadeInOut 3s forwards;
+      text-align: center;
+      min-width: 250px;
+    }
+
+    .alert-success {
+      background: #28a745;
+      color: white;
+    }
+
+    .alert-error {
+      background: #dc3545;
+      color: white;
+    }
+
+    @keyframes fadeInOut {
+      0% {
+        opacity: 0;
+        transform: translateY(-15px);
+      }
+
+      10%,
+      90% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      100% {
+        opacity: 0;
+        transform: translateY(-15px);
+      }
+    }
+
+    /* ==================== MEDIA QUERY PARA RESPONSIVIDAD ==================== */
+    @media (max-width: 768px) {
+      .grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      .mesa {
+        padding: 20px;
+        font-size: 18px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .mesa {
+        padding: 15px;
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- MENSAJES FLASH -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  <div class="alert-container">
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category }}">
+      {{ message }}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  {% endwith %}
+
+  <div class="wrapper">
+    <nav class="navbar">
+      <div class="logo">
+        <img src="{{ url_for('static', filename='img/logooo.png') }}" alt="Logo">
+        <span>Parrilla 51</span>
+      </div>
+
+      <ul class="nav-links">
+        <li><a href="{{ url_for('empleado.mesas_empleado') }}">Mesas</a></li>
+        <li><a href="{{ url_for('empleado.registrar_pedido') }}">Registrar</a></li>
+        <li><a href="{{ url_for('empleado.ordenes_empleado') }}">Órdenes</a></li>
+        <li><a href="{{ url_for('empleado.reservas_empleado') }}">Reservas</a></li>
+      </ul>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main>
+      <div class="zona">
+        <button class="zona-btn historial-btn"
+          onclick="window.location.href='{{ url_for('empleado.historial_pagos_restaurante') }}'">
+          Historial
+        </button>
+      </div>
+
+      <div class="grid" id="mesasGrid"></div>
+    </main>
+  </div>
+
+  <script>
+    const mesasGrid = document.getElementById('mesasGrid');
+    const mesasDoradas = JSON.parse(localStorage.getItem('mesasDoradas')) || [];
+
+    // Las mesas se generan desde Flask (datos reales)
+    const mesas = {{ mesas | tojson }};
+
+    mesas.forEach(m => {
+      const mesa = document.createElement('div');
+      mesa.className = 'mesa';
+      mesa.textContent = m.numero_mesa;
+
+      if (mesasDoradas.includes(m.id_mesa)) {
+        mesa.classList.add('dorada');
+      }
+
+      let holdTimer;
+      const holdDuration = 700; // Tiempo de clic sostenido
+
+      const startHold = (e) => {
+        e.stopPropagation();
+        holdTimer = setTimeout(() => {
+          mesa.classList.toggle('dorada');
+          if (mesa.classList.contains('dorada')) {
+            mesasDoradas.push(m.id_mesa);
+          } else {
+            const index = mesasDoradas.indexOf(m.id_mesa);
+            if (index > -1) mesasDoradas.splice(index, 1);
+          }
+          localStorage.setItem('mesasDoradas', JSON.stringify(mesasDoradas));
+        }, holdDuration);
+      };
+
+      const cancelHold = () => clearTimeout(holdTimer);
+
+      mesa.addEventListener('mousedown', startHold);
+      mesa.addEventListener('mouseup', cancelHold);
+      mesa.addEventListener('mouseleave', cancelHold);
+      mesa.addEventListener('touchstart', startHold);
+      mesa.addEventListener('touchend', cancelHold);
+      mesa.addEventListener('touchmove', cancelHold);
+
+      mesa.onclick = () => {
+        window.location.href = `/empleado/orden/${m.id_mesa}`;
+      };
+
+      mesasGrid.appendChild(mesa);
+    });
+
+    // Ocultar alertas automáticamente después de 7 segundos
+    setTimeout(() => {
+      const alerts = document.querySelectorAll('.alert');
+      alerts.forEach(a => a.remove());
+    }, 7000);
+  </script>
+
+  <footer>
+    © 2025 Parrilla 51 - Todos los derechos reservados
+  </footer>
+</body>
+
+</html>

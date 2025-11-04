@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Consultar Reservas</title>
+    <style>
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #3a3a3a;
+            color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+        .header-container {
+            background-color: #2f2f2f;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+        }
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 30px;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .header .logo {
+            width: 45px;
+            border-radius: 8px;
+        }
+        .header .nombre-logo {
+            font-size: 22px;
+            color: red;
+            font-weight: bold;
+        }
+        .menu {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        .menu a {
+            color: #f0f0f0;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .menu a:hover { color: #f1c40f; }
+
+        main { padding: 20px; }
+        h2 { margin-bottom: 15px; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+            background: #5f5f5f;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        thead {
+            background: #2f2f2f;
+            color: #f0f0f0;
+        }
+        thead th {
+            padding: 12px;
+            text-align: center;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 14px;
+        }
+        tbody td {
+            padding: 10px;
+            border-bottom: 1px solid #444;
+            text-align: center;
+        }
+        tbody tr:nth-child(even) { background: #6a6a6a; }
+        tbody tr:hover { background: #505050; }
+        .estado {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: bold;
+            color: #fff;
+        }
+        .aceptada { background: #28a745; }
+        .cancelada { background: #e74c3c; }
+
+        footer {
+            text-align: center;
+            padding: 15px;
+            background-color: #4a4a4a;
+            color: #f0f0f0;
+            margin-top: 40px;
+            border-top: 2px solid #f1c40f;
+        }
+    </style>
+</head>
+<body>
+    <div class="header-container">
+        <nav class="navbar"> 
+            <div class="header">
+                <img src="{{ url_for('static', filename='image.png') }}" alt="" class="logo">
+                <h1 class="nombre-logo">Parrilla 51</h1>
+            </div>
+            <div class="menu">
+                <a href="{{ url_for('admin.admin_dashboard') }}">Inicio</a>
+                <a href="{{ url_for('admin.admin_inventario') }}">Inventario</a>
+                <a href="{{ url_for('admin.admin_usuarios') }}">Asignación Rol</a>
+                <a href="{{ url_for('admin.admin_reservas') }}">Reservas</a>
+                <a href="{{ url_for('admin.admin_pedidos') }}">Pedidos</a>
+                <a href="{{ url_for('admin.admin_productos') }}">Productos</a>
+                <a href="{{ url_for('admin.admin_inventario') }}">Insumos</a>
+            </div>
+        </nav>
+    </div>
+
+    <main>
+        <h2>Listado de Reservas</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Teléfono</th>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Personas</th>
+                    <th>Mesa</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in reservas %}
+                <tr>
+                    <td>{{ r.id_reserva }}</td>
+                    <td>{{ r.nombre }}</td>
+                    <td>{{ r.telefono }}</td>
+                    <td>{{ r.fecha }}</td>
+                    <td>{{ r.hora }}</td>
+                    <td>{{ r.cant_personas }}</td>
+                    <td>{{ r.cod_mesa }}</td>
+                    <td>
+                        {% if r.estado == "aceptada" %}
+                            <span class="estado aceptada">Aceptada</span>
+                        {% elif r.estado == "cancelada" %}
+                            <span class="estado cancelada">Cancelada</span>
+                        {% else %}
+                            <span class="estado">{{ r.estado }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>

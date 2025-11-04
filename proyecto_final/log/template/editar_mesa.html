@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ 'Editar Mesa' if mesa else 'Agregar Mesa' }}</title>
+  <style>
+    body {
+      margin:0;
+      font-family:Arial,Helvetica,sans-serif;
+      background:#3a3a3a;
+      color:#fff;
+    }
+    .navbar {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      background:#2f2f2f;
+      padding:10px 20px;
+    }
+    .navbar .brand {
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-size:22px;
+      font-weight:bold;
+      color:#ff4444;
+    }
+    .navbar .brand img { width:40px; height:auto; }
+    .navbar .links { display:flex; gap:20px; }
+    .navbar .links a {
+      color:#fff;
+      text-decoration:none;
+      font-size:16px;
+      transition:color 0.3s;
+    }
+    .navbar .links a:hover { color:#ffd700; }
+    .navbar .perfil-btn {
+      background:#ffd700;
+      color:#000;
+      padding:8px 12px;
+      border:none;
+      border-radius:4px;
+      cursor:pointer;
+      font-weight:bold;
+    }
+    .navbar .perfil-btn:hover { background:#ffcc00; }
+
+    h1 {
+      text-align:center;
+      color:#ffd700;
+      margin:30px 0;
+    }
+    form {
+      background:#2f2f2f;
+      padding:25px;
+      border-radius:10px;
+      max-width:450px;
+      margin:auto;
+      box-shadow:0 3px 8px rgba(0,0,0,0.4);
+    }
+    label {
+      display:block;
+      margin:12px 0 6px;
+      font-weight:bold;
+      color:#ffd700;
+    }
+    input {
+      width:100%;
+      padding:10px;
+      margin-bottom:18px;
+      border:1px solid #555;
+      border-radius:6px;
+      background:#444;
+      color:#fff;
+    }
+    input:focus {
+      border-color:#ffd700;
+      outline:none;
+      box-shadow:0 0 4px rgba(241,196,15,0.5);
+    }
+    button {
+      padding:12px 18px;
+      background:#ffd700;
+      color:#000;
+      border:none;
+      cursor:pointer;
+      font-weight:bold;
+      border-radius:6px;
+      width:100%;
+      transition:background 0.2s;
+    }
+    button:hover { background:#ffcc00; }
+    p { text-align:center; margin-top:15px; }
+    a {
+      text-decoration:none;
+      color:#ff4444;
+      font-weight:bold;
+      transition:color 0.2s;
+    }
+    a:hover { color:#cc0000; }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="brand">
+    <img src="{{ url_for('static', filename='image.png') }}" alt="Logo Parrilla 51">
+    Parrilla 51
+  </div>
+  <div class="links">
+    <a href="{{ url_for('login') }}">Inicio</a>
+    <a href="{{ url_for('inventario') }}">Inventario</a>
+    <a href="{{ url_for('consultar_reservas') }}">Reservas</a>
+    <a href="{{ url_for('ver_mesas') }}">Mesas</a>
+  </div>
+  <a href="{{ url_for('logout') }}" class="perfil-btn">Salir</a>
+</nav>
+
+<!-- FORMULARIO -->
+<h1>{{ 'Editar Mesa' if mesa else 'Agregar Mesa' }}</h1>
+<form method="POST" action="{% if mesa %}{{ url_for('editar_mesa', id_mesa=mesa.id_mesa) }}{% else %}{{ url_for('agregar_mesa') }}{% endif %}">
+  <label for="numero">Número de Mesa</label>
+  <input id="numero" type="number" name="numero" 
+         value="{{ mesa.numero if mesa else '' }}" min="1" required>
+
+  <label for="capacidad">Capacidad</label>
+  <input id="capacidad" type="number" name="capacidad" 
+         value="{{ mesa.capacidad if mesa else '' }}" min="1" required>
+
+  <button type="submit">Guardar</button>
+</form>
+
+<p><a href="{{ url_for('inventario') }}">Volver</a></p>
+
+</body>
+</html>

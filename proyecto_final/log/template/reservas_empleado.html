@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reservas</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #3a3a3a;
+      color: #f0f0f0;
+      margin: 0;
+      padding: 0;
+    }
+
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #2f2f2f;
+      padding: 12px 30px;
+      color: #fff;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 22px;
+      font-weight: bold;
+      color: #ff4444;
+    }
+
+    .logo img {
+      height: 40px;
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 25px;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nav-links li a {
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .nav-links li a:hover {
+      color: #ffd700;
+    }
+
+    .btn-success {
+      background-color: #ffd700;
+      color: #000;
+      border: none;
+      font-weight: bold;
+    }
+
+    .btn-success:hover {
+      background-color: #e6b800;
+      color: #000;
+    }
+
+    .btn-danger {
+      background-color: #ff4444;
+      color: #fff;
+      border: none;
+      font-weight: bold;
+    }
+
+    .btn-danger:hover {
+      background-color: #e63b3b;
+    }
+
+    .btn-warning {
+      background-color: #ffd700 !important;
+      color: #000 !important;
+      font-weight: bold;
+      border: none;
+    }
+
+    .btn-warning:hover {
+      background-color: #e6b800 !important;
+      color: #000 !important;
+    }
+
+    .card {
+      background-color: #2f2f2f;
+      color: #f0f0f0;
+      border-radius: 8px;
+      border: 1px solid #ffd700;
+    }
+
+    .card .card-title {
+      color: #ffd700;
+    }
+
+    .card .card-text b {
+      color: #ffd700;
+    }
+
+    .modal-content {
+      background-color: #2f2f2f;
+      color: #f0f0f0;
+      border-radius: 10px;
+    }
+
+    .modal-header {
+      border-bottom: 1px solid #ffd700;
+    }
+
+    .modal-footer {
+      border-top: 1px solid #ffd700;
+    }
+
+    .modal-title {
+      color: #ffd700;
+    }
+
+    .form-control,
+    .form-select {
+      background-color: #4a4a4a;
+      color: #f0f0f0;
+      border: 1px solid #ffd700;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+      border-color: #ff4444;
+      box-shadow: none;
+    }
+
+    .search-container {
+      margin-bottom: 20px;
+    }
+    .card {
+      background-color: #2f2f2f;
+      color: #f0f0f0;
+      border: 1px solid #ffd700;
+      border-radius: 8px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .card:hover {
+      transform: scale(1.03);
+      box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+    }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background-color: #3a3a3a;
+      color: #f0f0f0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      overflow-x: hidden;
+      box-sizing: border-box;
+    }
+
+    *, *::before, *::after {
+      box-sizing: inherit;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* ==== CONTENIDO PRINCIPAL ==== */
+    main {
+      flex: 1; /* ocupa todo el espacio disponible */
+      display: flex;
+      flex-direction: column;
+    }
+
+    .container {
+      flex: 1;
+      width: 100%;
+      padding-bottom: 40px; /* espacio para que el contenido no toque el footer */
+      margin-bottom: 0 !important;
+    }
+
+    /* ==== FOOTER ==== */
+    footer {
+      background: #2f2f2f;
+      color: #fff;
+      text-align: center;
+      padding: 12px 0;
+      border-top: 2px solid #ffd700;
+      font-size: 15px;
+      width: 100%;
+      box-sizing: border-box;
+      margin-top: auto; /* se queda al fondo del contenido */
+      flex-shrink: 0;
+    }
+
+  </style>
+</head>
+
+<body>
+  <nav class="navbar">
+    <div class="logo">
+      <img src="{{ url_for('static', filename='img/logooo.png') }}" alt="Logo" />
+      <span>Parrilla 51</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="{{ url_for('empleado.mesas_empleado') }}">Mesas</a></li>
+      <li><a href="{{ url_for('empleado.registrar_pedido') }}">Registrar</a></li>
+      <li><a href="{{ url_for('empleado.ordenes_empleado') }}">Órdenes</a></li>
+      <li><a href="{{ url_for('empleado.reservas_empleado') }}">Reservas</a></li>
+    </ul>
+  </nav>
+
+  <!-- 🔹 CONTENEDOR DE MENSAJES FLASH DE FLASK -->
+  <div id="alertContainer" class="container mt-3">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+  </div>
+
+  <main class="container mt-4 position-relative">
+    <h3 class="text-center mb-3">Reservas Disponibles</h3>
+
+    <div class="search-container mb-3">
+      <form action="{{ url_for('empleado.buscar_reservas') }}" method="GET">
+        <div class="input-group">
+          <input type="text" class="form-control" placeholder="Buscar por nombre, documento, teléfono..."
+            name="search_query" value="{{ request.args.get('search_query', '') }}" autocomplete="off" />
+          <button class="btn btn-warning" type="submit">Buscar</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="position-relative mb-3">
+      <a href="{{ url_for('empleado.historial_reservas_em') }}" class="btn btn-warning position-absolute end-0">
+        Historial
+      </a>
+
+      <div class="text-center">
+        <button class="btn btn-danger px-5" data-bs-toggle="modal" data-bs-target="#modalAgregar">
+          + Agregar Reserva
+        </button>
+      </div>
+    </div>
+
+    <!-- 🔹 LISTADO DE RESERVAS -->
+    <div class="row mt-4 g-4">
+      {% for res in reservas %}
+      <div class="col-12 col-md-6 col-lg-4 d-flex" id="reserva-{{ res.id_reserva }}">
+        <div class="card shadow-sm p-3 flex-fill">
+          <div class="card-body">
+            <h5 class="card-title">Reserva #{{ res.id_reserva }}</h5>
+            <p class="card-text">
+              <b>Nombre:</b> {{ res.nombre }}<br>
+              <b>Documento de Identidad:</b> {{ res.documento }}<br>
+              <b>Teléfono:</b> {{ res.telefono }}<br>
+              <b>Fecha:</b> {{ res.fecha }}<br>
+              <b>Hora:</b> {{ res.hora }}<br>
+              <b>Cant. Personas:</b> {{ res.cant_personas }}<br>
+              <b>Tipo de Evento:</b> {{ res.tipo_evento }}<br>
+              <b>Comentarios:</b> {{ res.comentarios }}<br>
+              <b>ID Usuario:</b> {{ res.id_usuario }}<br>
+              <b>Estado:</b> <span id="estado{{ res.id_reserva }}" class="estado {{ res.estado }}">{{ res.estado }}</span>
+            </p>
+
+            <div class="d-flex justify-content-between mt-3">
+              <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                data-bs-target="#modalEditar{{ loop.index0 }}">Editar</button>
+
+              <button class="btn btn-danger btn-sm" data-bs-toggle="modal"
+                data-bs-target="#modalConfirmarEliminar{{ res.id_reserva }}">Cancelar</button>
+
+              <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                data-bs-target="#modalEstado{{ res.id_reserva }}">Estado</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 🔸 MODAL CAMBIAR ESTADO -->
+      <div class="modal fade" id="modalEstado{{ res.id_reserva }}" tabindex="-1">
+        <div class="modal-dialog">
+          <form onsubmit="return cambiarEstado(event, {{ res.id_reserva }})" class="modal-content p-3">
+            <div class="modal-header">
+              <h5 class="modal-title">Cambiar Estado de la Reserva</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+              <label class="form-label">Seleccione el nuevo estado</label>
+              <select class="form-select" id="nuevoEstado{{ res.id_reserva }}">
+                <option value="">Seleccione...</option>
+                <option value="Confirmada">Confirmada</option>
+                <option value="Completada">Completada</option>
+              </select>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+              <button type="submit" class="btn btn-success">Guardar Cambios</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      {% endfor %}
+    </div>
+  </main>
+
+  <footer>
+    © 2025 Parrilla 51 - Todos los derechos reservados
+  </footer>
+
+  <!-- ✅ BOOTSTRAP -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- ✅ ALERTA JS EN LUGAR DE TOAST -->
+  <script>
+    function mostrarAlerta(mensaje, tipo = "success") {
+      const alertContainer = document.getElementById("alertContainer");
+      const alertType = tipo === "error" ? "danger" : "success";
+
+      const alertDiv = document.createElement("div");
+      alertDiv.className = `alert alert-${alertType} alert-dismissible fade show mt-2`;
+      alertDiv.innerHTML = `
+        ${mensaje}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      `;
+      alertContainer.appendChild(alertDiv);
+
+      // Desaparece después de 4 segundos
+      setTimeout(() => bootstrap.Alert.getOrCreateInstance(alertDiv).close(), 4000);
+    }
+  </script>
+
+  <!-- ✅ FUNCIÓN PARA CAMBIAR ESTADO -->
+  <script>
+    function cambiarEstado(event, id_reserva) {
+      event.preventDefault();
+
+      const select = document.getElementById(`nuevoEstado${id_reserva}`);
+      const nuevoEstado = select.value;
+
+      if (!nuevoEstado) {
+        mostrarAlerta("⚠️ Selecciona un estado válido.", "error");
+        return false;
+      }
+
+      fetch(`/empleado/cambiar_estado_reserva/${id_reserva}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nuevo_estado: nuevoEstado })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          const estadoSpan = document.getElementById(`estado${id_reserva}`);
+          estadoSpan.textContent = nuevoEstado;
+          estadoSpan.className = `estado ${nuevoEstado}`;
+
+          if (nuevoEstado === "Completada") {
+            const card = document.getElementById(`reserva-${id_reserva}`);
+            if (card) card.remove();
+          }
+
+          mostrarAlerta("✅ Estado actualizado correctamente", "success");
+        } else {
+          mostrarAlerta(data.error || "⚠️ Error al actualizar el estado", "error");
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        mostrarAlerta("❌ Error en la conexión con el servidor", "error");
+      });
+
+      // Cierra el modal
+      const modalEl = document.getElementById(`modalEstado${id_reserva}`);
+      const modal = bootstrap.Modal.getInstance(modalEl);
+      modal.hide();
+
+      return false;
+    }
+  </script>
+</body>
+</html>
+

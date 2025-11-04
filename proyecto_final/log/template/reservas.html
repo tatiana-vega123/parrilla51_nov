@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Reservas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            background-color: #f9f9f9;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        form {
+            background: #fff;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        input, button {
+            padding: 10px;
+            margin: 8px 0;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+        th {
+            background: #007bff;
+            color: white;
+        }
+        tr:hover {
+            background: #f1f1f1;
+        }
+        .mensaje {
+            color: green;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Gestión de Reservas</h1>
+
+    <!-- Mensaje flash -->
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="mensaje">
+                {% for msg in messages %}
+                    {{ msg }}
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Formulario para nueva reserva -->
+    <form action="{{ url_for('reservas.crear_reserva') }}" method="POST">
+        <label for="Nombres">Escriba su nombre y apellido completo  #</label>
+    <input type="string" id="nombre" name="nombre" required>
+
+    <label for="documento">Número de documento  #</label>
+    <input type="number" id="documento" name="documento" required>
+    
+    <label for="fecha">📆 Fecha   #</label>
+    <input type="date" id="fecha" name="fecha" required>
+
+    <label for="hora">⏰ Hora    #</label>
+    <input type="time" id="hora" name="hora" required>
+
+    <label for="cant_personas">👥 Cantidad de Personas  #</label>
+    <input type="number" id="cant_personas" name="cant_personas" min="1" max="10" required>
+
+    <label for="tipo_evento">📋 Selecciona el tipo de evento que va a realizar   #</label>
+<select id="tipo_evento" name="tipo_evento" required>
+    <option value="">Tipo de evento</option>
+    <option value="cumpleaños">🎂 Cumpleaños</option>
+    <option value="aniversario">💍 Aniversario</option>
+    <option value="reunion">👥 Reunión</option>
+    <option value="otro">📌 Otro</option>
+</select>
+
+<label for="comentarios">📝 Comentarios</label>
+<textarea id="comentarios" name="comentarios" rows="3"  placeholder="Escribe detalles de tu reserva aquí"></textarea>
+    </form>
+
+    <!-- Listado de reservas -->
+    <h2>Lista de Reservas</h2>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Fecha</th>
+            <th>Hora</th>
+        </tr>
+        {% for r in reservas %}
+        <tr>
+            <td>{{ r.id_reserva }}</td>
+            <td>{{ r.nombre }}</td>
+            <td>{{ r.fecha }}</td>
+            <td>{{ r.hora }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+</body>
+</html>

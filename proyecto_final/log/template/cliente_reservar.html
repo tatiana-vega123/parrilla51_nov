@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Hacer Reserva</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background: #3a3a3a;
+      color: #fff;
+      margin: 0;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 50px auto;
+      background: #2f2f2f;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    h2 {
+      text-align: center;
+      color: #ffd700;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+      color: #f1f1f1;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 6px;
+      margin-top: 5px;
+      border-radius: 20px;
+      border: none;
+      background: #444;
+      color: #fff;
+      resize: none;
+      
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border: 2px solid #ffd700;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 12px;
+      width: 100%;
+      background: #ffd700;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      color: #000;
+    }
+
+    button:hover {
+      background: #e0b800;
+    }
+
+    #documento::-webkit-inner-spin-button, 
+    #documento::-webkit-outer-spin-button { 
+      -webkit-appearance: none; margin: 0;
+    }
+
+        .fade-in {
+        opacity: 0;
+        transform: translateY(10px);
+        animation: fadeIn 0.6s ease-out forwards;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+        </style>
+  </head>
+
+<body>
+    <!--Formulario para hacer reservas-->
+  <div class="container">
+    <h2>📅 Hacer Reserva</h2>
+
+    <form method="POST" action="{{ url_for('cliente.cliente_reservar') }}" onsubmit="return confirmarReserva(event)">
+
+
+      <label for="nombre">Nombre completo</label>
+      <input type="text" id="nombre" name="nombre" placeholder="Ingrese su nombre completo" 
+      oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '')" required>
+
+      <label for="documento">Documento</label>
+      <input type="number" id="documento" name="documento" placeholder="Ingrese su número de documento" required>
+
+      <label for="fecha">📆 Fecha</label>
+      <input type="date" id="fecha" name="fecha" required>
+
+      <label for="hora">🕐 Hora</label>
+      <select id="hora" name="hora" required>
+        <option value="">Seleccione una hora</option>
+        <option value="11:30am-1:30pm">11:30am - 1:30pm</option>
+        <option value="12:00pm-2:00pm">12:00pm - 2:00pm</option>
+        <option value="12:30pm-2:30pm">12:30pm - 2:30pm</option>
+        <option value="1:00pm-3:00pm">1:00pm - 3:00pm</option>
+        <option value="1:30pm-3:30pm">1:30pm - 3:30pm</option>
+        <option value="2:00pm-4:00pm">2:00pm - 4:00pm</option>
+        <option value="2:30pm-4:30pm">2:30pm - 4:30pm</option>
+      </select>
+
+      <label for="cant_personas">👥 Cantidad de Personas</label>
+      <input type="number" id="cant_personas" name="cant_personas" min="1" max="10" onkeypress="return false" required >
+
+      <label for="tipo_evento">📋 Tipo de evento</label>
+      <select id="tipo_evento" name="tipo_evento" required>
+        <option value="">Seleccione</option>
+        <option value="almuerzo">Almuerzo</option>
+        <option value="reunion">Reunión</option>
+        <option value="celebracion">Celebración</option>
+      </select>
+
+      <label for="comentarios">📝 Comentarios</label>
+      <textarea id="comentarios" name="comentarios" rows="3" placeholder="Detalles adicionales"></textarea>
+
+      <label for="telefono">📞 Teléfono</label>
+      <input type="tel" id="telefono" name="telefono" pattern="[0-9]{10}" required placeholder="Ej: 3112345678">
+
+      <button type="submit">Reservar</button>
+    </form>
+  </div>
+
+  <!-- Modal antes de confirmar reserva -->
+<div class="modal fade" id="reservaConfirmada" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content p-3 rounded-4" style="background-color: #2f2f2f; color: #fff;">
+      <div class="text-center mb-3">
+        <h5 class="fw-bold text-success">🎉 ¡Reserva Confirmada!</h5>
+        <p><span id="reserva-nombre"></span>, tu reserva ha sido creada con éxito</p>
+      </div>
+
+      <!-- Resumen de la reserva  -->
+      <div class="d-flex justify-content-around text-center border rounded py-2 mb-3" style="background:#3a3a3a; border:1px solid #555;">
+        <div>
+          <i class="bi bi-people-fill fs-5"></i>
+          <div id="resumen-personas" class="small mt-1"></div>
+        </div>
+        <div>
+          <i class="bi bi-calendar-event fs-5"></i>
+          <div id="resumen-fecha" class="small mt-1"></div>
+        </div>
+        <div>
+          <i class="bi bi-clock fs-5"></i>
+          <div id="resumen-hora" class="small mt-1"></div>
+        </div>
+      </div>
+
+      <div class="text-center">
+        <button type="button" class="btn btn-danger rounded-pill px-4" onclick="enviarReserva()">Finalizar</button>
+      </div>
+    </div>
+  </div>
+</div>
+  <!-- Codigo js -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  function confirmarReserva(event) {
+    event.preventDefault();
+
+    const nombre = document.getElementById('nombre').value;
+    const fecha = document.getElementById('fecha').value;
+    const hora = document.getElementById('hora').value;
+    const personas = document.getElementById('cant_personas').value;
+
+    if (!nombre || !fecha || !hora || !personas) {
+      alert("Por favor completa todos los campos.");
+      return false;
+    }
+
+    //  Mostrar datos en el modal con un formato chevere
+    document.getElementById("reserva-nombre").innerText = nombre;
+    document.getElementById("resumen-personas").innerText = personas;
+    document.getElementById("resumen-fecha").innerText = formatearFecha(fecha);
+    document.getElementById("resumen-hora").innerText = formatearHora(hora);
+
+    // Abrir el modal de la confirmación
+    const modal = new bootstrap.Modal(document.getElementById('reservaConfirmada'));
+    modal.show();
+
+    return false;
+  }
+
+  // Función para enviar el formulario al dar "Finalizar"
+  function enviarReserva() {
+    document.querySelector("form").submit();
+  }
+
+  function formatearFecha(fechaISO) {
+    const fecha = new Date(fechaISO);
+    const opciones = { day: 'numeric', month: 'long' };
+    return fecha.toLocaleDateString('es-ES', opciones);
+  }
+
+
+  function formatearHora(hora24) {
+    let [h, m] = hora24.split(':');
+    h = parseInt(h);
+    const sufijo = h >= 12 ? 'pm' : 'am';
+    h = h % 12 || 12;
+    return `${h}:${m} ${sufijo}`;
+  }
+
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const fechaInput = document.getElementById("fecha");
+    const hoy = new Date();
+    hoy.setDate(hoy.getDate() + 1);
+    const manana = hoy.toISOString().split("T")[0];
+    fechaInput.setAttribute("min", manana);
+  });
+</script>
+</body>
+</html>

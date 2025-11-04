@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+   <meta charset="UTF-8">
+    <title>Panel de Administración - Parrilla 51</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+         body {
+            font-family: "Segoe UI", Tahoma, sans-serif;
+            background: #3f3f3f;
+            margin: 0;
+            padding: 0;
+            color: #fff;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            background: #2b2b2b;
+            padding: 10px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .navbar .header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .navbar .logo {
+            width: 45px;
+            height: 45px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .navbar .nombre-logo {
+            color: #e74c3c; /* rojo */
+            font-size: 22px;
+            margin: 0;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #fff;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #ffcc00;
+        }
+
+        /* Bienvenida */
+        .bienvenida {
+            padding: 20px 40px;
+        }
+
+        .bienvenida h2 {
+            margin: 0 0 20px 0;
+            font-size: 24px;
+            color: #fff;
+        }
+
+        /* Dashboard */
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+            padding: 0 40px 40px;
+        }
+
+        .card {
+            display: block;
+            background: #4a4a4a;
+            border-radius: 12px;
+            padding: 25px 15px;
+            text-align: center;
+            color: inherit;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+            transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.8);
+            background: #5a5a5a;
+            color: #fff;
+        }
+
+        .card i {
+            font-size: 32px;
+            margin-bottom: 15px;
+            color: #ffcc00;
+        }
+
+        .card p {
+            font-size: 16px;
+            font-weight: bold;
+            margin: 0;
+            color: inherit;
+        }
+    </style>
+    <!-- HEADER Y NAVBAR -->
+<nav class="navbar"> 
+    <div class="header">
+        <img src="{{ url_for('static', filename='image.png') }}" alt="Logo Parrilla 51" class="logo">
+        <h1 class="nombre-logo">Parrilla 51</h1>
+    </div>
+</nav>
+</head>
+<body>
+
+<div class="bienvenida">
+    <h2>Bienvenido a Parrilla 51</h2>
+</div>
+
+<div class="dashboard">
+ 
+    <a href="{{ url_for('inventario') }}" class="card" role="button" aria-label="Inventario">
+    <i class="fa-solid fa-box"></i>
+    <p>📦 Inventario</p>
+</a>
+
+<a href="{{ url_for('asignarol') }}" class="card" role="button" aria-label="Asignación de Rol">
+    <i class="fa-solid fa-user-gear"></i>
+    <p>👤 Asignación Rol</p>
+</a>
+
+<a href="{{ url_for('consultar_reservas') }}" class="card" role="button" aria-label="Consultar Reservas">
+    <i class="fa-solid fa-calendar-check"></i>
+    <p>➕ Consultar Reservas</p>
+</a>
+
+
+<a href="{{ url_for('consulta_P') }}" class="card" role="button" aria-label="Consultar Productos">
+    <i class="fa-solid fa-burger"></i>
+    <p>🍔 Consultar Productos</p>
+</a>
+
+<a href="{{ url_for('consulta_Y') }}" class="card" role="button" aria-label="Consultar Insumos">
+    <i class="fa-solid fa-carrot"></i>
+    <p>🥕 Consultar Insumos</p>
+</a>
+
+<a href="{{ url_for('consultaVentas') }}" class="card" role="button" aria-label="Consultar Ventas">
+    <i class="fa-solid fa-cash-register"></i>
+    <p>💰 Consultar Ventas</p>
+</a>
+
+
+
+<a href="{{ url_for('reportes') }}" class="card" role="button" aria-label="Reportes">
+    <i class="fa-solid fa-chart-line"></i>
+    <p>📊 Reportes</p>
+</a>
+
+
+    <!-- puedes añadir más tarjetas siguiendo el mismo patrón -->
+</div>
+
+</body>
+</html>
