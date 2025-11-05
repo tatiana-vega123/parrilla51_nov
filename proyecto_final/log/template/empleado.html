@@ -4,139 +4,185 @@
   <meta charset="UTF-8">
   <title>Panel Empleado - Parrilla 51</title>
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: #3a3a3a;
-      color: #fff;
-    }
-    .navbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #2f2f2f;
-      padding: 12px 30px;
-    }
-    .brand {
-      font-size: 22px;
-      font-weight: bold;
-      color: #ff4444;
-    }
-    .links {
-      display: flex;
-      gap: 25px;
-    }
-    .links a {
-      color: #fff;
-      text-decoration: none;
-      font-size: 16px;
-      transition: color 0.3s;
-      font-weight: bold;
-    }
-    .links a:hover { color: #ffd700; }
-    .perfil {
-      background: #ffd700;
-      color: #000;
-      padding: 8px 14px;
-      border: none;
-      border-radius: 6px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .perfil:hover { background: #ffcc00; }
-    .container {
-      text-align: center;
-      padding: 40px;
-    }
-    h2 {
-      color: #ffd700;
-      font-size: 26px;
-      margin-bottom: 10px;
-    }
-    p { color: #ccc; }
-    .acciones {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 25px;
-      margin-top: 30px;
-    }
-    .card {
-      background: #2f2f2f;
-      border-radius: 10px;
-      width: 220px;
-      padding: 25px;
-      text-align: center;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.4);
-      transition: transform 0.2s;
-    }
-    .card:hover { transform: scale(1.05); }
-    .card h3 {
-      color: #ffd700;
-      margin-bottom: 12px;
-    }
-    .card a {
-      display: inline-block;
-      padding: 10px 15px;
-      background: #ffd700;
-      color: #000;
-      text-decoration: none;
-      border-radius: 6px;
-      font-weight: bold;
-    }
-    .card a:hover { background: #ffcc00; }
-    .logout-btn {
-      background: #ff4444;
-      color: #fff;
-      padding: 10px 20px;
-      text-decoration: none;
-      border-radius: 6px;
-      font-weight: bold;
-      display: inline-block;
-      margin-top: 35px;
-    }
-    .logout-btn:hover { background: #cc0000; }
-    footer {
-      text-align: center;
-      padding: 15px;
-      background: #2f2f2f;
-      color: #f0f0f0;
-      margin-top: 40px;
-      border-top: 2px solid #ffd700;
-    }
+  body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #3a3a3a;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    overflow-x: hidden; /* Para evitar la barra de desplazamiento horizontal */
+    overflow-y: auto;   /* Esto habilita la barra de desplazamiento vertical solo si es necesario */
+  }
+
+  
+
+  /* ==================== NAVBAR ==================== */
+  .navbar {
+    display: flex;
+    justify-content: space-between; /* Distribuye los elementos a los extremos */
+    align-items: center; /* Alinea los elementos verticalmente */
+    background: #2f2f2f;
+    padding: 12px 30px;
+    color: #fff;
+    width: 100%;
+    box-sizing: border-box; /* Asegura que el padding no cause desbordamiento */
+  }
+
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 22px;
+    font-weight: bold;
+    color: #ff4444;
+  }
+
+  .logo img {
+    height: 40px;
+  }
+
+  .brand {
+    font-size: 22px;
+    font-weight: bold;
+    color: #ff4444;
+  }
+
+  .perfil {
+    background: #ffd700;
+    color: #000;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-left: 20px;
+    display: inline-block;
+    white-space: nowrap; /* Asegura que el texto no se divida en varias líneas */
+  }
+
+  .perfil:hover { 
+    background: #ffcc00; 
+  }
+
+
+  /* ==================== CONTAINER ==================== */
+  .container {
+    text-align: center;
+    padding: 40px;
+    flex-grow: 1; /* Asegura que el contenido ocupe el espacio restante */
+  }
+
+  /* ==================== ACCIONES ==================== */
+  .acciones {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 20px;
+    margin-top: 30px;
+  }
+
+  .card {
+    background: #2f2f2f;
+    border-radius: 10px;
+    padding: 25px;
+    text-align: center;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.4);
+    transition: transform 0.2s;
+    min-width: 150px;
+  }
+
+  .card:hover { 
+    transform: scale(1.05); 
+  }
+
+  .card h3 {
+    color: #ffd700;
+    margin-bottom: 12px;
+  }
+
+  .card a {
+    display: inline-block;
+    padding: 10px 15px;
+    background: #ffd700;
+    color: #000;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: bold;
+  }
+
+  .card a:hover { 
+    background: #ffcc00; 
+  }
+
+  /* ==================== LOGOUT BUTTON ==================== */
+  .logout-btn {
+    background: #ff4444;
+    color: #fff;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: bold;
+    display: inline-block;
+    margin-top: 35px;
+  }
+
+  .logout-btn:hover { 
+    background: #cc0000; 
+  }
+
+  /* ==================== FOOTER ==================== */
+  footer {
+    background: #2f2f2f;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    border-top: 2px solid #ffd700;
+    margin-top: auto;
+  }
+
   </style>
 </head>
 <body>
   
   <div class="navbar">
-    <div class="brand">🍴 Parrilla 51</div>
-    <a href="{{ url_for('auth.logout') }}" class="perfil">Cerrar Sesión</a>
+    <div class="logo">
+      <img src="{{ url_for('static', filename='img/logooo.png') }}" alt="Logo">
+      <span class="brand">Parrilla 51</span>
+    </div>
+
   </div>
 
   <div class="container">
     <h2>Bienvenido, {{ session['nombre'] }}</h2>
-    <p>Desde aquí puedes gestionar mesas, pedidos y reservas de clientes 🍽️</p>
+    <p>¿Qué deseas hacer hoy? 🤔</p>
 
     <div class="acciones">
       <div class="card">
-        <h3>🪑 Mesas</h3>
-        <a href="{{ url_for('empleado.mesas_empleado') }}">Ver Mesas</a>
+        <h3>Registrar pagos del restaurante 💳</h3>
+        <a href="{{ url_for('empleado.mesas_empleado') }}">Ir a mesas</a>
       </div>
       <div class="card">
-        <h3>📝 Registrar Pedido</h3>
-        <a href="{{ url_for('empleado.registrar_pedido') }}">Registrar</a>
+        <h3>Cambiar el estado de los productos🔄</h3>
+        <a href="{{ url_for('empleado.registrar_pedido') }}">Ir a registrar</a>
       </div>
       <div class="card">
-        <h3>📦 Órdenes</h3>
-        <a href="{{ url_for('empleado.ordenes_empleado') }}">Órdenes</a>
+        <h3>Gestionar órdenes 📝</h3>
+        <a href="{{ url_for('empleado.ordenes_empleado') }}">Ir a órdenes</a>
       </div>
       <div class="card">
-        <h3>📅 Reservas</h3>
-        <a href="{{ url_for('empleado.reservas_empleado') }}">Reservas</a>
+        <h3>Gestionar reservas 📅</h3>
+        <a href="{{ url_for('empleado.reservas_empleado') }}">Ir a reservas</a>
       </div>
+      <div class="card">
+        <h3>Consultar mi Perfil 👤</h3>
+        <a href="{{ url_for('empleado.perfil_empleado') }}">Ir a perfil</a>
+      </div>
+
     </div>
 
-    <a href="{{ url_for('auth.logout') }}" class="logout-btn">Salir</a>
+    <a href="{{ url_for('auth.logout') }}" class="logout-btn">cerrar sesion</a>
   </div>
 
   <footer>

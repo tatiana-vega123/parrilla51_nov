@@ -536,17 +536,101 @@ def historial_reservas_em():
     
     return render_template('historial_reservas_em.html', historial=historial)
 
+from flask import Blueprint, request, jsonify, current_app, session
+from werkzeug.security import check_password_hash, generate_password_hash
+
+
 # ===============================
-# perfil empleado
+# PERFIL DE EMPLEADO (HTML)
 # ===============================
-@empleado_bp.route('/empleado/perfil')
+@empleado_bp.route("/empleado/perfil")
 def perfil_empleado():
-    es_empleado, mensaje = verificar_empleado()
-    if not es_empleado:
-        flash(mensaje, 'danger')
-        return redirect(url_for('auth.login'))
-    
-    return render_template('perfil_empleado.html')
+    """Muestra la página HTML del perfil del empleado"""
+    if "id_usuario" not in session:
+        flash("Debes iniciar sesión primero", "danger")
+        return redirect(url_for("auth.login"))
+
+    return render_template("perfil_empleado.html")  # 👈 tu HTML
+
+
+# ===============================
+# API: OBTENER DATOS DEL PERFIL (JSON)
+# ===============================
+@empleado_bp.route("/empleado/api/perfil", methods=["GET"])
+def api_perfil_empleado():
+    """Devuelve los datos del perfil del empleado en formato JSON"""
+    if "id_usuario" not in session:
+        return jsonify({"error": True, "mensaje": "No logueado"}), 401
+
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cur.execute("""
+        SELECT id_usuario, nombre, apellido, telefono, direccion, correo
+        FROM usuarios WHERE id_usuario = %s
+    """, (session["id_usuario"],))
+    empleado = cur.fetchone()
+    cur.close()
+
+    return jsonify(empleado)
+
+
+# ===============================
+# API: ACTUALIZAR PERFIL
+# ===============================
+@empleado_bp.route("/empleado/api/perfil", methods=["POST"])
+def api_actualizar_perfil_empleado():
+    """Actualiza los datos del perfil del empleado"""
+    if "id_usuario" not in session:
+        return jsonify({"error": True, "mensaje": "No logueado"}), 401
+
+    data = request.get_json()
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        UPDATE usuarios
+        SET nombre=%s, apellido=%s, telefono=%s, direccion=%s, correo=%s
+        WHERE id_usuario=%s
+    """, (
+        data["nombre"], data["apellido"], data["telefono"],
+        data["direccion"], data["correo"], session["id_usuario"]
+    ))
+    mysql.connection.commit()
+    cur.close()
+
+    return jsonify({"error": False, "mensaje": "Perfil actualizado correctamente"})
+
+
+# ===============================
+# API: CAMBIAR CONTRASEÑA
+# ===============================
+@empleado_bp.route("/empleado/api/cambiar_contrasena", methods=["POST"])
+def api_cambiar_contrasena_empleado():
+    """Permite cambiar la contraseña del empleado"""
+    if "id_usuario" not in session:
+        return jsonify({"error": True, "mensaje": "No logueado"}), 401
+
+    data = request.get_json()
+    old_pass = data.get("oldPass")
+    new_pass = data.get("newPass")
+
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cur.execute("SELECT contraseña FROM usuarios WHERE id_usuario = %s", (session["id_usuario"],))
+    empleado = cur.fetchone()
+
+    if not empleado:
+        cur.close()
+        return jsonify({"error": True, "mensaje": "Usuario no encontrado"}), 404
+
+    # Verificar contraseña actual
+    if not check_password_hash(empleado["contraseña"], old_pass):
+        cur.close()
+        return jsonify({"error": True, "mensaje": "La contraseña actual no es correcta"}), 400
+
+    # Guardar nueva contraseña
+    new_hashed = generate_password_hash(new_pass)
+    cur.execute("UPDATE usuarios SET contraseña = %s WHERE id_usuario = %s", (new_hashed, session["id_usuario"]))
+    mysql.connection.commit()
+    cur.close()
+
+    return jsonify({"error": False, "mensaje": "Contraseña actualizada con éxito"})
 
 
 # ===============================
