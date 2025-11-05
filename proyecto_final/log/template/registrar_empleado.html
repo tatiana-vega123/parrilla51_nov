@@ -125,12 +125,14 @@
       <img src="{{ url_for('static', filename='img/logooo.png') }}" alt="Logo">
       <span>Parrilla 51</span>
     </div>
-    <ul class="nav-links">
-      <li><a href="{{ url_for('empleado.mesas_empleado') }}">Mesas</a></li>
-      <li><a href="{{ url_for('empleado.registrar_pedido') }}">Registrar</a></li>
-      <li><a href="{{ url_for('empleado.ordenes_empleado') }}">Órdenes</a></li>
-      <li><a href="{{ url_for('empleado.reservas_empleado') }}">Reservas</a></li>
-    </ul>
+      <ul class="nav-links">
+        <li><a href="{{ url_for('empleado.empleado_dashboard') }}">Inicio</a></li>
+        <li><a href="{{ url_for('empleado.mesas_empleado') }}">Mesas</a></li>
+        <li><a href="{{ url_for('empleado.registrar_pedido') }}">Registrar</a></li>
+        <li><a href="{{ url_for('empleado.ordenes_empleado') }}">Órdenes</a></li>
+        <li><a href="{{ url_for('empleado.reservas_empleado') }}">Reservas</a></li>
+        <li><a href="{{ url_for('empleado.perfil_empleado') }}"><i class="bi bi-person-circle" style="font-size: 1.3rem;"></i></a></li>
+      </ul>
   </nav>
   <!-- CONTENIDO -->
   <div class="container my-4">

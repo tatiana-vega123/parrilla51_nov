@@ -200,6 +200,32 @@
       margin-top: auto; /* se queda al fondo del contenido */
       flex-shrink: 0;
     }
+    main.container {
+      margin-top: -35px !important; /* lo sube un poquito más */
+      padding-top: 0 !important;   /* elimina espacio interno adicional */
+    }
+    main h3 {
+      margin-top: 0 !important;    /* asegura que el título no empuje hacia abajo */
+      padding-top: 0 !important;
+    }
+    .alert {
+    position: fixed;
+    top: 70px; /* ajusta según la altura de tu navbar */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    z-index: 1050; /* para que se vea encima de todo */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+/* Aseguramos que el mensaje tenga un buen espaciado */
+  .alert-info {
+    margin-top: 20px;  /* Añadir un margen para que no se pegue al título */
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border-color: #bee5eb;
+  }
+
+
 
   </style>
 </head>
@@ -211,14 +237,16 @@
       <span>Parrilla 51</span>
     </div>
     <ul class="nav-links">
+      <li><a href="{{ url_for('empleado.empleado_dashboard') }}">Inicio</a></li>
       <li><a href="{{ url_for('empleado.mesas_empleado') }}">Mesas</a></li>
       <li><a href="{{ url_for('empleado.registrar_pedido') }}">Registrar</a></li>
       <li><a href="{{ url_for('empleado.ordenes_empleado') }}">Órdenes</a></li>
       <li><a href="{{ url_for('empleado.reservas_empleado') }}">Reservas</a></li>
+      <li><a href="{{ url_for('empleado.perfil_empleado') }}"><i class="bi bi-person-circle" style="font-size: 1.3rem;"></i></a></li>
     </ul>
   </nav>
 
-  <!-- 🔹 CONTENEDOR DE MENSAJES FLASH DE FLASK -->
+  <!-- 🔹 CONTENEDOR DE MENSAJES FLASH -->
   <div id="alertContainer" class="container mt-3">
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
@@ -232,92 +260,272 @@
     {% endwith %}
   </div>
 
-  <main class="container mt-4 position-relative">
-    <h3 class="text-center mb-3">Reservas Disponibles</h3>
+  <main class="container mt-1 position-relative">
+  <h3 class="text-center mb-3">Reservas Disponibles</h3>
 
-    <div class="search-container mb-3">
-      <form action="{{ url_for('empleado.buscar_reservas') }}" method="GET">
-        <div class="input-group">
-          <input type="text" class="form-control" placeholder="Buscar por nombre, documento, teléfono..."
-            name="search_query" value="{{ request.args.get('search_query', '') }}" autocomplete="off" />
-          <button class="btn btn-warning" type="submit">Buscar</button>
-        </div>
-      </form>
+  {% if not reservas %}
+    <div class="text-center mb-3">
+      <p class="alert alert-info">No hay reservas disponibles.</p>
     </div>
+  {% endif %}
 
-    <div class="position-relative mb-3">
-      <a href="{{ url_for('empleado.historial_reservas_em') }}" class="btn btn-warning position-absolute end-0">
-        Historial
-      </a>
-
-      <div class="text-center">
-        <button class="btn btn-danger px-5" data-bs-toggle="modal" data-bs-target="#modalAgregar">
-          + Agregar Reserva
-        </button>
+  <!-- 🔎 BÚSQUEDA -->
+  <div class="search-container mb-3">
+    <form action="{{ url_for('empleado.buscar_reservas') }}" method="GET">
+      <div class="input-group">
+        <input type="text" class="form-control" placeholder="Buscar por nombre, documento, teléfono..."
+          name="search_query" value="{{ request.args.get('search_query', '') }}" autocomplete="off" />
+        <button class="btn btn-warning" type="submit">Buscar</button>
       </div>
-    </div>
+    </form>
+  </div>
 
+  <!-- 📜 BOTONES -->
+  <div class="position-relative mb-3">
+    <a href="{{ url_for('empleado.historial_reservas_em') }}" class="btn btn-warning position-absolute end-0">
+      Historial
+    </a>
+
+    <div class="text-center">
+      <button class="btn btn-danger px-5" data-bs-toggle="modal" data-bs-target="#modalAgregar">
+        + Agregar Reserva
+      </button>
+    </div>
+  </div>
+ 
     <!-- 🔹 LISTADO DE RESERVAS -->
     <div class="row mt-4 g-4">
-      {% for res in reservas %}
-      <div class="col-12 col-md-6 col-lg-4 d-flex" id="reserva-{{ res.id_reserva }}">
-        <div class="card shadow-sm p-3 flex-fill">
-          <div class="card-body">
-            <h5 class="card-title">Reserva #{{ res.id_reserva }}</h5>
-            <p class="card-text">
-              <b>Nombre:</b> {{ res.nombre }}<br>
-              <b>Documento de Identidad:</b> {{ res.documento }}<br>
-              <b>Teléfono:</b> {{ res.telefono }}<br>
-              <b>Fecha:</b> {{ res.fecha }}<br>
-              <b>Hora:</b> {{ res.hora }}<br>
-              <b>Cant. Personas:</b> {{ res.cant_personas }}<br>
-              <b>Tipo de Evento:</b> {{ res.tipo_evento }}<br>
-              <b>Comentarios:</b> {{ res.comentarios }}<br>
-              <b>ID Usuario:</b> {{ res.id_usuario }}<br>
-              <b>Estado:</b> <span id="estado{{ res.id_reserva }}" class="estado {{ res.estado }}">{{ res.estado }}</span>
-            </p>
+      {% if reservas %}
+        {% for res in reservas %}
+          <div class="col-12 col-md-6 col-lg-4 d-flex" id="reserva-{{ res.id_reserva }}">
+            <div class="card shadow-sm p-3 flex-fill">
+              <div class="card-body">
+                <h5 class="card-title">Reserva #{{ res.id_reserva }}</h5>
+                <p class="card-text">
+                  <b>Nombre:</b> {{ res.nombre }}<br>
+                  <b>Documento:</b> {{ res.documento }}<br>
+                  <b>Teléfono:</b> {{ res.telefono }}<br>
+                  <b>Fecha:</b> {{ res.fecha }}<br>
+                  <b>Hora:</b> {{ res.hora }}<br>
+                  <b>Cant. Personas:</b> {{ res.cant_personas }}<br>
+                  <b>Tipo de Evento:</b> {{ res.tipo_evento }}<br>
+                  <b>Comentarios:</b> {{ res.comentarios }}<br>
+                  <b>ID Usuario:</b> {{ res.id_usuario }}<br>
+                  <b>Estado:</b> <span id="estado{{ res.id_reserva }}" class="estado {{ res.estado }}">{{ res.estado }}</span>
+                </p>
 
-            <div class="d-flex justify-content-between mt-3">
-              <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
-                data-bs-target="#modalEditar{{ loop.index0 }}">Editar</button>
+                <div class="d-flex justify-content-between mt-3">
+                  <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                    data-bs-target="#modalEditar{{ loop.index0 }}">Editar</button>
 
-              <button class="btn btn-danger btn-sm" data-bs-toggle="modal"
-                data-bs-target="#modalConfirmarEliminar{{ res.id_reserva }}">Cancelar</button>
+                  <button class="btn btn-danger btn-sm" data-bs-toggle="modal"
+                    data-bs-target="#modalConfirmarEliminar{{ res.id_reserva }}">Cancelar</button>
 
-              <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
-                data-bs-target="#modalEstado{{ res.id_reserva }}">Estado</button>
+                  <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                    data-bs-target="#modalEstado{{ res.id_reserva }}">Estado</button>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
 
-      <!-- 🔸 MODAL CAMBIAR ESTADO -->
-      <div class="modal fade" id="modalEstado{{ res.id_reserva }}" tabindex="-1">
-        <div class="modal-dialog">
-          <form onsubmit="return cambiarEstado(event, {{ res.id_reserva }})" class="modal-content p-3">
-            <div class="modal-header">
-              <h5 class="modal-title">Cambiar Estado de la Reserva</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-              <label class="form-label">Seleccione el nuevo estado</label>
-              <select class="form-select" id="nuevoEstado{{ res.id_reserva }}">
-                <option value="">Seleccione...</option>
-                <option value="Confirmada">Confirmada</option>
-                <option value="Completada">Completada</option>
-              </select>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-              <button type="submit" class="btn btn-success">Guardar Cambios</button>
-            </div>
-          </form>
-        </div>
-      </div>
+          <!-- 🟡 MODAL EDITAR -->
+          <div class="modal fade" id="modalEditar{{ loop.index0 }}" tabindex="-1">
+            <div class="modal-dialog">
+              <form action="{{ url_for('empleado.editar_reserva', id_reserva=res.id_reserva) }}" method="POST" class="modal-content p-3">
+                <div class="modal-header">
+                  <h5 class="modal-title">Editar Reserva</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                  <label class="form-label">Nombre</label>
+                  <input type="text" class="form-control mb-3" name="nombre" value="{{ res.nombre }}" />
 
-      {% endfor %}
+                  <label class="form-label">Documento</label>
+                  <input type="text" pattern="[0-9]+" class="form-control mb-3" name="documento" value="{{ res.documento }}" />
+
+                  <label class="form-label">Teléfono</label>
+                  <input type="text" class="form-control mb-3" name="telefono" value="{{ res.telefono }}" />
+
+                  <label class="form-label">Fecha</label>
+                  <input type="date" class="form-control mb-3" name="fecha" required min="{{ today }}" max="{{ today[:4] }}-12-31" value="{{ res.fecha }}"  data-original="{{ res.fecha }}" />
+
+                  <label class="form-label">Hora</label>
+                  <select class="form-select mb-3" name="hora" required>
+                    <option value="11:30am-1:30pm" {% if res.hora=='11:30am-1:30pm' %}selected{% endif %}>11:30am - 1:30pm</option>
+                    <option value="12:00pm-2:00pm" {% if res.hora=='12:00pm-2:00pm' %}selected{% endif %}>12:00pm - 2:00pm</option>
+                    <option value="12:30pm-2:30pm" {% if res.hora=='12:30pm-2:30pm' %}selected{% endif %}>12:30pm - 2:30pm</option>
+                    <option value="1:00pm-3:00pm" {% if res.hora=='1:00pm-3:00pm' %}selected{% endif %}>1:00pm - 3:00pm</option>
+                    <option value="1:30pm-3:30pm" {% if res.hora=='1:30pm-3:30pm' %}selected{% endif %}>1:30pm - 3:30pm</option>
+                    <option value="2:00pm-4:00pm" {% if res.hora=='2:00pm-4:00pm' %}selected{% endif %}>2:00pm - 4:00pm</option>
+                    <option value="2:30pm-4:30pm" {% if res.hora=='2:30pm-4:30pm' %}selected{% endif %}>2:30pm - 4:30pm</option>
+                  </select>
+
+                  <label class="form-label">Cantidad de personas</label>
+                  <select class="form-select mb-3" name="cant_personas">
+                    <option value="">Seleccione la cantidad de personas</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                  </select>
+
+                  <label class="form-label">Tipo de Evento</label>
+                  <select class="form-select mb-3" name="tipo_evento">
+                    <option value="almuerzo" {% if res.tipo_evento=='almuerzo' %}selected{% endif %}>Almuerzo</option>
+                    <option value="reunion" {% if res.tipo_evento=='reunion' %}selected{% endif %}>Reunión</option>
+                    <option value="celebracion" {% if res.tipo_evento=='celebracion' %}selected{% endif %}>Celebración</option>
+                    <option value="Otro" {% if res.tipo_evento=='Otro' %}selected{% endif %}>Otro</option>
+                  </select>
+
+                  <label class="form-label">Comentarios</label>
+                  <input type="text" class="form-control mb-3" name="comentarios" value="{{ res.comentarios }}" />
+
+                  <label class="form-label">ID Usuario</label>
+                  <input type="number" class="form-control mb-3" name="id_usuario" value="{{ res.id_usuario }}" />
+
+                  <input type="hidden" name="estado" value="{{ res.estado }}">
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                  <button type="submit" class="btn btn-success">Guardar</button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- 🔹 Modal Confirmar Eliminar -->
+          <div class="modal fade" id="modalConfirmarEliminar{{ res.id_reserva }}" tabindex="-1"
+            aria-labelledby="modalLabel{{ res.id_reserva }}" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content p-3">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="modalLabel{{ res.id_reserva }}">¿Seguro que deseas cancelar esta reserva?</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                  Esta acción no se puede deshacer. ¿Estás seguro de que deseas eliminar esta reserva?
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                  <form action="{{ url_for('empleado.eliminar_reserva', id_reserva=res.id_reserva) }}" method="POST" style="display:inline;">
+                    <button type="submit" class="btn btn-danger">Confirmar</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- 🟢 MODAL CAMBIAR ESTADO -->
+          <div class="modal fade" id="modalEstado{{ res.id_reserva }}" tabindex="-1">
+            <div class="modal-dialog">
+              <form onsubmit="return cambiarEstado(event, {{ res.id_reserva }})" class="modal-content p-3">
+                <div class="modal-header">
+                  <h5 class="modal-title">Cambiar Estado</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                  <label class="form-label">Seleccione el nuevo estado</label>
+                  <select class="form-select" id="nuevoEstado{{ res.id_reserva }}">
+                    <option value="">Seleccione...</option>
+                    <option value="Confirmada">Confirmada</option>
+                    <option value="Completada">Completada</option>
+                  </select>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                  <button type="submit" class="btn btn-success">Guardar Cambios</button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+        {% endfor %}
+      {% endif %}
+    </div>
+   
+
+    <!-- 🟢 MODAL AGREGAR -->
+    <div class="modal fade" id="modalAgregar" tabindex="-1">
+      <div class="modal-dialog">
+        <form action="{{ url_for('empleado.agregar_reserva') }}" method="POST" class="modal-content p-3">
+          <div class="modal-header">
+            <h5 class="modal-title">Agregar Reserva</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <label class="form-label">Nombre</label>
+            <input type="text" class="form-control mb-3" name="nombre" required />
+
+            <label class="form-label">Documento</label>
+            <input type="text" pattern="[0-9]+" class="form-control mb-3" name="documento" required />
+
+            <label class="form-label">Teléfono</label>
+            <input type="text" class="form-control mb-3" name="telefono" required />
+
+            <label class="form-label">Fecha</label>
+            <input type="date" class="form-control mb-3" name="fecha" required min="{{ today }}" max="{{ today[:4] }}-12-31" />
+
+            <label class="form-label">Hora</label>
+            <select class="form-select mb-3" name="hora" required>
+              <option value="11:30am-1:30pm">11:30am - 1:30pm</option>
+              <option value="12:00pm-2:00pm">12:00pm - 2:00pm</option>
+              <option value="12:30pm-2:30pm">12:30pm - 2:30pm</option>
+              <option value="1:00pm-3:00pm">1:00pm - 3:00pm</option>
+              <option value="1:30pm-3:30pm">1:30pm - 3:30pm</option>
+              <option value="2:00pm-4:00pm">2:00pm - 4:00pm</option>
+              <option value="2:30pm-4:30pm">2:30pm - 4:30pm</option>
+            </select>
+
+            <label class="form-label">Cantidad de personas</label>
+            <select class="form-select mb-3" name="cant_personas">
+              <option value="">Seleccione la cantidad de personas</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+              <option value="11">11</option>
+              <option value="12">12</option>
+            </select>
+
+            <label class="form-label">Tipo de evento</label>
+            <select class="form-select mb-3" name="tipo_evento" required>
+              <option value="">Seleccione...</option>
+              <option value="almuerzo">Almuerzo</option>
+              <option value="reunion">Reunión</option>
+              <option value="celebracion">Celebración</option>
+              <option value="Otro">Otro</option>
+            </select>
+
+            <label class="form-label">Comentarios</label>
+            <input type="text" class="form-control mb-3" name="comentarios" />
+
+            <label class="form-label">ID Usuario</label>
+            <input type="number" class="form-control mb-3" name="id_usuario" required />
+
+            <input type="hidden" name="estado" value="Pendiente">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-success">Agregar</button>
+          </div>
+        </form>
+      </div>
     </div>
   </main>
+
 
   <footer>
     © 2025 Parrilla 51 - Todos los derechos reservados
@@ -326,30 +534,21 @@
   <!-- ✅ BOOTSTRAP -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-  <!-- ✅ ALERTA JS EN LUGAR DE TOAST -->
+  <!-- ✅ ALERTAS -->
   <script>
     function mostrarAlerta(mensaje, tipo = "success") {
       const alertContainer = document.getElementById("alertContainer");
       const alertType = tipo === "error" ? "danger" : "success";
-
       const alertDiv = document.createElement("div");
       alertDiv.className = `alert alert-${alertType} alert-dismissible fade show mt-2`;
-      alertDiv.innerHTML = `
-        ${mensaje}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-      `;
+      alertDiv.innerHTML = `${mensaje}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>`;
       alertContainer.appendChild(alertDiv);
-
-      // Desaparece después de 4 segundos
       setTimeout(() => bootstrap.Alert.getOrCreateInstance(alertDiv).close(), 4000);
     }
-  </script>
 
-  <!-- ✅ FUNCIÓN PARA CAMBIAR ESTADO -->
-  <script>
     function cambiarEstado(event, id_reserva) {
       event.preventDefault();
-
       const select = document.getElementById(`nuevoEstado${id_reserva}`);
       const nuevoEstado = select.value;
 
@@ -369,27 +568,19 @@
           const estadoSpan = document.getElementById(`estado${id_reserva}`);
           estadoSpan.textContent = nuevoEstado;
           estadoSpan.className = `estado ${nuevoEstado}`;
-
           if (nuevoEstado === "Completada") {
             const card = document.getElementById(`reserva-${id_reserva}`);
             if (card) card.remove();
           }
-
           mostrarAlerta("✅ Estado actualizado correctamente", "success");
         } else {
           mostrarAlerta(data.error || "⚠️ Error al actualizar el estado", "error");
         }
       })
-      .catch(err => {
-        console.error(err);
-        mostrarAlerta("❌ Error en la conexión con el servidor", "error");
-      });
+      .catch(() => mostrarAlerta("❌ Error en la conexión con el servidor", "error"));
 
-      // Cierra el modal
       const modalEl = document.getElementById(`modalEstado${id_reserva}`);
-      const modal = bootstrap.Modal.getInstance(modalEl);
-      modal.hide();
-
+      bootstrap.Modal.getInstance(modalEl).hide();
       return false;
     }
   </script>

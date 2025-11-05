@@ -313,6 +313,7 @@ def reservas_empleado():
     cur.close()
     
     today = str(date.today())
+    print (reservas)
     return render_template('reservas_empleado.html', reservas=reservas, today=today)
 
 # ===============================
@@ -403,7 +404,7 @@ def agregar_reserva():
     return redirect(url_for('empleado.reservas_empleado'))
 
 # ===============================
-# EDITAR RESERVA
+# EDITAR RESERVA (Versión corregida)
 # ===============================
 @empleado_bp.route('/empleado/editar_reserva/<int:id_reserva>', methods=['POST'])
 def editar_reserva(id_reserva):
@@ -425,9 +426,10 @@ def editar_reserva(id_reserva):
     if count > 0:
         flash("Ya existe una reserva para esta fecha. Solo se permite una por día.", "error")
         cur.close()
-        return redirect(url_for("/empleado/reservas_empleado"))
+        # ❌ Se corrige el redirect (antes estaba con ruta incorrecta)
+        return redirect(url_for('empleado.reservas_empleado'))
 
-    # Actualizar datos
+    # Obtener datos del formulario
     nombre = request.form["nombre"]
     documento = request.form["documento"]
     telefono = request.form["telefono"]
@@ -436,8 +438,16 @@ def editar_reserva(id_reserva):
     tipo_evento = request.form["tipo_evento"]
     comentarios = request.form["comentarios"]
     id_usuario = request.form["id_usuario"]
-    estado = request.form.get("estado", "disponible")
 
+    # ✅ Mantener el estado actual si no se envía desde el formulario
+    estado_form = request.form.get("estado")
+    if not estado_form:
+        cur.execute("SELECT estado FROM reservas WHERE id_reserva = %s", (id_reserva,))
+        estado = cur.fetchone()["estado"]
+    else:
+        estado = estado_form
+
+    # Actualizar datos de la reserva
     cur.execute("""
         UPDATE reservas SET
             nombre=%s,
@@ -453,10 +463,11 @@ def editar_reserva(id_reserva):
         WHERE id_reserva=%s
     """, (nombre, documento, telefono, nueva_fecha, hora,
           cant_personas, tipo_evento, comentarios, id_usuario, estado, id_reserva))
+    
     mysql.connection.commit()
     cur.close()
 
-    flash("Reserva actualizada exitosamente", "success")
+    flash("✅ Reserva actualizada exitosamente", "success")
     return redirect(url_for('empleado.reservas_empleado'))
 
 # ===============================
@@ -524,6 +535,19 @@ def historial_reservas_em():
     cur.close()
     
     return render_template('historial_reservas_em.html', historial=historial)
+
+# ===============================
+# perfil empleado
+# ===============================
+@empleado_bp.route('/empleado/perfil')
+def perfil_empleado():
+    es_empleado, mensaje = verificar_empleado()
+    if not es_empleado:
+        flash(mensaje, 'danger')
+        return redirect(url_for('auth.login'))
+    
+    return render_template('perfil_empleado.html')
+
 
 # ===============================
 # REGISTRAR BLUEPRINT
