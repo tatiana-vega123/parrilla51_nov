@@ -105,12 +105,10 @@ def orden_mesa(mesa_id):
         return redirect(url_for('empleado.mesas_empleado'))
 
     # Si es GET, mostrar productos y categorías
-    cur.execute("SELECT * FROM categorias")
+    cur.execute("SELECT * FROM categorias WHERE id_categoria != 6")
     categorias = cur.fetchall()
-
-    cur.execute("SELECT * FROM productos")
+    cur.execute("SELECT * FROM productos WHERE cod_categoria != 6")
     productos = cur.fetchall()
-
     cur.close()
     return render_template('calculadora.html', mesa=mesa_id, categorias=categorias, productos=productos)
 
@@ -256,7 +254,6 @@ def actualizar_estado_producto():
         return jsonify({"success": False, "msg": str(e)}), 500
     finally:
         cur.close()
-
 # ===============================
 # ÓRDENES
 # ===============================
@@ -267,31 +264,137 @@ def ordenes_empleado():
         flash(mensaje, 'danger')
         return redirect(url_for('auth.login'))
     
-    cur = mysql.connection.cursor()
-    cur.execute("""
-        SELECT * FROM pedidos
-        WHERE estado IN ('pendiente', 'entregado')
-        ORDER BY fecha DESC, hora DESC
-    """)
-    ordenes = cur.fetchall()
+    search_query = request.args.get('search_query', '').strip()
+
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    
+    # Si hay búsqueda, filtramos por cliente, teléfono o estado
+    if search_query:
+        cur.execute("""
+            SELECT * FROM pedidos
+            WHERE (cod_usuario LIKE %s OR telefono LIKE %s OR estado LIKE %s)
+            AND estado IN ('pendiente', 'entregado')
+            ORDER BY fecha DESC, hora DESC
+        """, (f"%{search_query}%", f"%{search_query}%", f"%{search_query}%"))
+    else:
+        cur.execute("""
+            SELECT * FROM pedidos
+            WHERE estado IN ('pendiente', 'entregado')
+            ORDER BY fecha DESC, hora DESC
+        """)
+    
+    pedidos = cur.fetchall()
+    
+    ordenes = []
+
+    for pedido in pedidos:
+        cur.execute("""
+            SELECT dp.cod_producto, dp.cantidad, dp.precio_unitario, p.nombre
+            FROM detalle_pedido dp
+            JOIN productos p ON dp.cod_producto = p.id_producto
+            WHERE dp.cod_pedido = %s
+        """, (pedido['id_pedido'],))
+        detalles = cur.fetchall()
+
+        productos = []
+        for d in detalles:
+            subtotal = float(d['cantidad']) * float(d['precio_unitario'])
+            productos.append({
+                'nombre': d['nombre'],
+                'cantidad': d['cantidad'],
+                'precio_unitario': float(d['precio_unitario']),
+                'subtotal': subtotal
+            })
+
+        pedido['productos'] = productos
+        ordenes.append(pedido)
+
     cur.close()
     
-    return render_template('ordenes_empleado.html', ordenes=ordenes)
+    return render_template('ordenes_empleado.html', ordenes=ordenes, search_query=search_query)
 
-@empleado_bp.route('/empleado/ordenes/cambiar_estado/<int:id_pedido>/<string:nuevo_estado>')
-def cambiar_estado_orden(id_pedido, nuevo_estado):
+
+# ===============================
+# CAMBIAR ESTADO (AJAX)
+# ===============================
+@empleado_bp.route('/actualizar_estado/<int:id_pedido>', methods=['POST'])
+def actualizar_estado(id_pedido):
     es_empleado, mensaje = verificar_empleado()
     if not es_empleado:
-        flash(mensaje, 'danger')
-        return redirect(url_for('auth.login'))
-    
+        return jsonify({'error': mensaje}), 403
+
+    data = request.get_json()
+    nuevo_estado = data.get('estado')
+
     cur = mysql.connection.cursor()
     cur.execute("UPDATE pedidos SET estado=%s WHERE id_pedido=%s", (nuevo_estado, id_pedido))
     mysql.connection.commit()
     cur.close()
-    
-    flash(f"Estado de la orden {id_pedido} actualizado a: {nuevo_estado}", "success")
-    return redirect(url_for('empleado.ordenes_empleado'))
+
+    return jsonify({'success': True, 'estado': nuevo_estado})
+
+@empleado_bp.route('/empleado/historial_ordenes')
+def historial_ordenes_empleado():
+    es_empleado, mensaje = verificar_empleado()
+    if not es_empleado:
+        flash(mensaje, 'danger')
+        return redirect(url_for('auth.login'))
+
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+
+    # Leer parámetro de búsqueda (si existe)
+    search_query = request.args.get('search_query', '').strip()
+
+    if search_query:
+        # Filtrar por nombre, teléfono, dirección o estado
+        cur.execute("""
+            SELECT * FROM pedidos
+            WHERE estado IN ('entregado', 'cancelado')
+              AND (cod_usuario LIKE %s OR telefono LIKE %s OR estado LIKE %s)
+            ORDER BY fecha DESC, hora DESC
+        """, (
+            f"%{search_query}%",
+            f"%{search_query}%",
+            f"%{search_query}%"
+        ))
+    else:
+        # Mostrar todos los pedidos finalizados o cancelados
+        cur.execute("""
+            SELECT * FROM pedidos
+            WHERE estado IN ('entregado', 'cancelado')
+            ORDER BY fecha DESC, hora DESC
+        """)
+
+    pedidos = cur.fetchall()
+    ordenes = []
+
+    # Obtener detalles de cada pedido
+    for pedido in pedidos:
+        cur.execute("""
+            SELECT dp.cod_producto, dp.cantidad, dp.precio_unitario, p.nombre
+            FROM detalle_pedido dp
+            JOIN productos p ON dp.cod_producto = p.id_producto
+            WHERE dp.cod_pedido = %s
+        """, (pedido['id_pedido'],))
+
+        detalles = cur.fetchall()
+
+        productos = []
+        for d in detalles:
+            subtotal = float(d['cantidad']) * float(d['precio_unitario'])
+            productos.append({
+                'nombre': d['nombre'],
+                'cantidad': d['cantidad'],
+                'precio_unitario': float(d['precio_unitario']),
+                'subtotal': subtotal
+            })
+
+        pedido['productos'] = productos
+        ordenes.append(pedido)
+
+    cur.close()
+
+    return render_template('historial_ordenes_em.html', ordenes=ordenes, search_query=search_query)
 
 # ===============================
 # RESERVAS

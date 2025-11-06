@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -15,8 +14,7 @@
       box-sizing: border-box;
     }
 
-    html,
-    body {
+    html, body {
       font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
       background-color: #3a3a3a;
       color: #f0f0f0;
@@ -37,6 +35,7 @@
       flex-grow: 1;
     }
 
+    /* ==== NAVBAR ==== */
     .navbar {
       display: flex;
       align-items: center;
@@ -79,15 +78,7 @@
       color: #ffd700;
     }
 
-    footer {
-      background: #2f2f2f;
-      color: #fff;
-      text-align: center;
-      padding: 11.5px;
-      border-top: 2px solid #ffd700;
-      margin-top: auto;
-    }
-
+    /* ==== CONTENIDO ==== */
     .content {
       flex-grow: 1;
       padding: 40px;
@@ -97,49 +88,89 @@
 
     h2 {
       text-align: center;
-      color: #ffd700;
+      color: #ffffff;
       margin-bottom: 25px;
     }
 
+    /* ==== TARJETAS ==== */
+    .card {
+      background-color: #2f2f2f;
+      border: 1px solid #ffd700;
+      margin-bottom: 25px;
+      padding: 25px;
+      border-radius: 10px;
+      color: #f0f0f0;
+      transition: transform 0.2s ease-in-out;
+    }
+
+    .card:hover {
+      transform: scale(1.02);
+    }
+
+    .card-title {
+      color: #ffd700;
+      font-weight: bold;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    /* ==== FORMULARIOS ==== */
+    label {
+      color: #ffd700;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
     .form-control {
-      background-color: #4a4a4a;
+      background-color: #3a3a3a;
       color: #fff;
-      border: 1px solid #666;
+      border: 1px solid #ffd700;
+      border-radius: 5px;
+      transition: 0.3s;
     }
 
     .form-control:focus {
-      background-color: #555;
-      border-color: #ffd700;
+      background-color: #4a4a4a;
+      border-color: #ff4444;
       color: #fff;
-      box-shadow: none;
+      box-shadow: 0 0 0px #ff4444;
     }
 
     .btn-primary {
       background-color: #ff4444;
       border: none;
+      font-weight: bold;
     }
 
     .btn-primary:hover {
       background-color: #cc0000;
     }
 
-    .card {
-      background-color: #2f2f2f;
-      border: 1px solid #555;
-      margin-bottom: 25px;
-      padding: 25px;
-      border-radius: 8px;
+    /* ==== INPUT CON ICONO ==== */
+    .input-group-text {
+      background-color: #3a3a3a;
+      color: #ffd700;
+      border: 1px solid #ffd700;
+      cursor: pointer;
     }
 
-    label {
-      font-weight: 500;
-      margin-bottom: 5px;
+    .input-group-text:hover {
+      color: #ff4444;
+    }
+
+    /* ==== FOOTER ==== */
+    footer {
+      background: #2f2f2f;
+      color: #fff;
+      text-align: center;
+      padding: 10px;
+      border-top: 2px solid #ffd700;
+      margin-top: auto;
     }
   </style>
 </head>
 
 <body>
-
   <div class="wrapper">
     <nav class="navbar">
       <div class="logo">
@@ -162,6 +193,7 @@
 
       <!-- FORMULARIO DE PERFIL -->
       <div class="card">
+        <h4 class="card-title">Datos del Empleado</h4>
         <form id="formPerfil">
           <div class="row mb-3">
             <div class="col-md-6">
@@ -195,15 +227,25 @@
 
       <!-- FORMULARIO DE CAMBIO DE CONTRASEÑA -->
       <div class="card">
-        <h4 class="mb-3">Cambiar Contraseña</h4>
+        <h4 class="card-title">Cambiar Contraseña</h4>
         <form id="formContrasena">
           <div class="mb-3">
             <label>Contraseña Actual</label>
-            <input type="password" class="form-control" id="oldPass" required>
+            <div class="input-group">
+              <input type="password" class="form-control" id="oldPass" required>
+              <span class="input-group-text" onclick="togglePassword('oldPass', this)">
+                <i class="bi bi-eye-slash"></i>
+              </span>
+            </div>
           </div>
           <div class="mb-3">
             <label>Nueva Contraseña</label>
-            <input type="password" class="form-control" id="newPass" required>
+            <div class="input-group">
+              <input type="password" class="form-control" id="newPass" required>
+              <span class="input-group-text" onclick="togglePassword('newPass', this)">
+                <i class="bi bi-eye-slash"></i>
+              </span>
+            </div>
           </div>
           <button type="submit" class="btn btn-primary w-100">Cambiar Contraseña</button>
         </form>
@@ -227,7 +269,6 @@
           return;
         }
 
-        // Rellenar campos
         document.getElementById("nombre").value = data.nombre || "";
         document.getElementById("apellido").value = data.apellido || "";
         document.getElementById("telefono").value = data.telefono || "";
@@ -283,7 +324,20 @@
         document.getElementById("formContrasena").reset();
       }
     });
+
+    // ===== MOSTRAR / OCULTAR CONTRASEÑA =====
+    function togglePassword(id, iconElement) {
+      const input = document.getElementById(id);
+      const icon = iconElement.querySelector("i");
+
+      if (input.type === "password") {
+        input.type = "text";
+        icon.classList.replace("bi-eye-slash", "bi-eye");
+      } else {
+        input.type = "password";
+        icon.classList.replace("bi-eye", "bi-eye-slash");
+      }
+    }
   </script>
 </body>
-
 </html>
