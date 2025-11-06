@@ -1,0 +1,72 @@
+body {
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  background: #3a3a3a;
+  color: #fff;
+  margin: 0;
+}
+.container {
+  max-width: 800px;
+  margin: 40px auto;
+  background: #2f2f2f;
+  padding: 25px;
+  border-radius: 10px;
+}
+h2 { text-align: center; color: #ffd700; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+th, td {
+  padding: 12px;
+  text-align: center;
+  border-bottom: 1px solid #444;
+}
+th { background: #444; }
+button {
+  padding: 10px;
+  background: #ff4444;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+button:hover { background: #cc0000; }
+.confirmar {
+  margin-top: 20px;
+  padding: 12px;
+  width: 100%;
+  background: #ffd700;
+  color: #000;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.confirmar:hover { background: #e0b800; }
+a.volver {
+  display: block;
+  margin-top: 20px;
+  text-align: center;
+  color: #ff4444;
+  text-decoration: none;
+}
+.opciones { margin-top: 20px; }
+.opciones label { margin-right: 20px; }
+#datos-domicilio input {
+  width: 80%;
+  max-width: 400px;
+  padding: 10px;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  border: 2px solid #f1d638c8;
+  background: #444;
+  color: white;
+  font-size: 14px;
+}
+#datos-domicilio label {
+  font-weight: bold;
+  display: block;
+  margin-top: 10px;
+  color: #ffd700;
+}

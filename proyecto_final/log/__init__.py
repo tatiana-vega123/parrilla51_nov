@@ -7,19 +7,20 @@ mysql = MySQL()
 mail = Mail()
 serializer = URLSafeTimedSerializer("pinchellave")
 
+
 def create_app():
     app = Flask(__name__, template_folder="template")
     app.secret_key = "pinchellave"
-    
+
     # ------------------ Configuración Base de Datos ------------------
     app.config['MYSQL_HOST'] = 'localhost'
     app.config['MYSQL_USER'] = 'root'
     app.config['MYSQL_PASSWORD'] = ''
     app.config['MYSQL_DB'] = 'parrilla51'
     app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
-    
+
     mysql.init_app(app)
-    
+
     # ------------------ Configuración Correo ------------------
     app.config['MAIL_SERVER'] = 'smtp.gmail.com'
     app.config['MAIL_PORT'] = 587

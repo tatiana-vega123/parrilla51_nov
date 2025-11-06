@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 04-11-2025 a las 09:46:35
+-- Tiempo de generación: 06-11-2025 a las 02:32:28
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -104,7 +104,18 @@ INSERT INTO `alertas` (`id_alerta`, `mensaje`, `fecha`, `tipo`) VALUES
 (0, '❌ Se canceló la reserva N° 10', '2025-11-03 22:58:11', 'reserva'),
 (0, '❌ Se canceló la reserva N° 11', '2025-11-03 22:58:11', 'reserva'),
 (0, '? Se creó una reserva para el 2025-11-04 a las  para 10 personas, ', '2025-11-04 02:17:22', 'reserva'),
-(0, '? Se creó una reserva para el 2025-11-05 a las 2:00pm-4:00pm para 2 personas, ', '2025-11-04 03:17:33', 'reserva');
+(0, '? Se creó una reserva para el 2025-11-05 a las 2:00pm-4:00pm para 2 personas, ', '2025-11-04 03:17:33', 'reserva'),
+(0, 'Nuevo usuario registrado: Wendy (wenda109108@gmail.com)', '2025-11-04 14:58:05', ''),
+(0, '? Se creó una reserva para el 2025-11-07 a las 12:30pm-2:30pm para 10 personas, ', '2025-11-04 15:20:38', 'reserva'),
+(0, '? Se creó una reserva para el 2025-11-13 a las 12:30pm-2:30pm para 4 personas, ', '2025-11-04 15:38:15', 'reserva'),
+(0, '? Se creó una reserva para el 2025-11-14 a las 1:00pm-3:00pm para 3 personas, ', '2025-11-04 15:45:04', 'reserva'),
+(0, '❌ Se canceló la reserva N° 5', '2025-11-04 16:00:02', 'reserva'),
+(0, '? Se creó una reserva para el 2025-11-13 a las 2:00pm-4:00pm para 5 personas, ', '2025-11-04 16:00:53', 'reserva'),
+(0, '❌ Se eliminó el producto \"Pechuga a la plancha\" del inventario', '2025-11-04 17:35:57', 'producto'),
+(0, '❌ Se eliminó el producto \"Papas fritasss\" del inventario', '2025-11-04 17:35:57', 'producto'),
+(0, '❌ Se eliminó el producto \"Arroz blanco\" del inventario', '2025-11-04 17:35:57', 'producto'),
+(0, '? Se creó una reserva para el 2025-11-20 a las 2:00pm-4:00pm para 6 personas, ', '2025-11-05 16:53:05', 'reserva'),
+(0, '? Se creó una reserva para el 2025-11-08 a las 12:30pm-2:30pm para 2 personas, ', '2025-11-05 20:17:43', 'reserva');
 
 -- --------------------------------------------------------
 
@@ -148,6 +159,20 @@ CREATE TABLE `detalle_pedido` (
   `iva` decimal(10,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `detalle_pedido`
+--
+
+INSERT INTO `detalle_pedido` (`id_detalle`, `cod_pedido`, `cod_producto`, `cantidad`, `precio_unitario`, `iva`) VALUES
+(1, 1, 3, 1, 24000, NULL),
+(2, 2, 14, 1, 26000, NULL),
+(3, 2, 15, 1, 20000, NULL),
+(4, 3, 45, 1, 3500, NULL),
+(5, 4, 3, 2, 24000, NULL),
+(6, 4, 24, 1, 0, NULL),
+(7, 4, 25, 1, 0, NULL),
+(8, 5, 47, 1, 4000, NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -161,13 +186,6 @@ CREATE TABLE `detalle_pedido_restaurante` (
   `cantidad` int(11) NOT NULL,
   `precio_unitario` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `detalle_pedido_restaurante`
---
-
-INSERT INTO `detalle_pedido_restaurante` (`id_detalle_pedido_restaurante`, `id_pago_restaurante`, `id_producto`, `cantidad`, `precio_unitario`) VALUES
-(1, 1, 2, 1, 24000.00);
 
 -- --------------------------------------------------------
 
@@ -296,10 +314,20 @@ CREATE TABLE `pedidos` (
   `telefono` bigint(20) DEFAULT NULL,
   `total` bigint(20) DEFAULT NULL,
   `estado` enum('entregado','cancelado','pendiente','en preparacion') DEFAULT 'pendiente',
-  `cod_mesa` int(11) DEFAULT NULL,
   `cod_usuario` int(11) DEFAULT NULL,
   `direccion` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `pedidos`
+--
+
+INSERT INTO `pedidos` (`id_pedido`, `tipo_entrega`, `fecha`, `hora`, `metodo_pago`, `telefono`, `total`, `estado`, `cod_usuario`, `direccion`) VALUES
+(1, 'restaurante', '2025-11-05', '15:06:58', 'efectivo', NULL, 24000, 'pendiente', 48, NULL),
+(2, 'restaurante', '2025-11-05', '15:27:21', 'efectivo', NULL, 46000, 'pendiente', 48, NULL),
+(3, 'domicilio', '2025-11-05', '16:48:00', 'efectivo', 3271738299, 3500, 'pendiente', 48, 'calle 20 # 4-11'),
+(4, 'restaurante', '2025-11-05', '16:56:02', 'efectivo', NULL, 48000, 'pendiente', 48, NULL),
+(5, 'restaurante', '2025-11-05', '20:18:56', 'efectivo', NULL, 4000, 'pendiente', 48, NULL);
 
 --
 -- Disparadores `pedidos`
@@ -366,9 +394,54 @@ CREATE TABLE `productos` (
 --
 
 INSERT INTO `productos` (`id_producto`, `nombre`, `cantidad`, `descripcion`, `precio`, `fecha_vencimiento`, `fecha_lote`, `cod_categoria`, `imagen`, `estado`) VALUES
-(2, 'Pechuga a la plancha', 20, 'Pechuga de pollo dorada', 24000, NULL, NULL, 2, 'pechuga.jpg', 'Disponible'),
-(3, 'Papas fritasss', 30, 'Porción de papas fritas doradas', 8000, NULL, NULL, 6, 'https://www.google.com/imgres?q=papas%20fritas&imgurl=https%3A%2F%2Fcocina-casera.com%2Fwp-content%2Fuploads%2F2023%2F01%2Fpatatas-fritas-crujientes-francesa-1.jpg&imgrefurl=https%3A%2F%2Fcocina-casera.com%2Fpatatas-fritas-crujientes-a-la-francesa%2F&doci', 'Disponible'),
-(4, 'Arroz blanco', 25, 'Porción de arroz blanco cocido', 6000, NULL, NULL, 6, 'arroz.jpg', 'Disponible');
+(1, 'Churrasco grande (390g)', 40, 'Corte de res a la parrilla', 39000, NULL, NULL, 1, 'churrasco_grandesito.jpg', 'Disponible'),
+(2, 'Churrasco pequeño (230g)', 30, 'Corte de res a la parrilla tamaño pequeño', 25000, NULL, NULL, 1, 'churrasco_pequeno.png', 'Disponible'),
+(3, 'Carne grande (320g)', 30, 'Carne de res asada a la parrilla', 24000, NULL, NULL, 1, 'carne_grande.jpg', 'Disponible'),
+(4, 'Carne pequeña (200g)', 20, 'Carne de res asada tamaño pequeño', 19000, NULL, NULL, 1, 'carne_pequena.jpg', 'Disponible'),
+(5, 'Baby beef (250g)', 20, 'Corte fino de res a la parrilla', 32000, NULL, NULL, 1, 'baby_beef.jpg', 'Disponible'),
+(6, 'Sobrebarriga dorada a la parrilla o en salsa (270g)', 30, 'Corte de res preparado a la parrilla o en salsa', 26000, NULL, NULL, 1, 'sobrebarriga.jpg', 'Disponible'),
+(7, 'Lengua a la parrilla', 30, 'Lengua de res asada a la parrilla', 26000, NULL, NULL, 1, 'lengua_parrilla.jpg', 'Disponible'),
+(8, 'Morrillo (290g)', 30, 'Corte de morrillo de res a la parrilla', 26000, NULL, NULL, 1, 'morrillo.jpg', 'Disponible'),
+(9, 'Hamburguesa con papa francesa', 30, 'Hamburguesa artesanal acompañada de papas fritas', 16000, NULL, NULL, 1, 'hamburguesa.jpg', 'Disponible'),
+(10, 'Churrasco de pollo (pierna pernil deshuesado 280g)', 20, 'Corte delicioso', 19000, NULL, NULL, 2, 'churrasco_pollo.jpg', 'Disponible'),
+(11, 'Pechuga grande (320g)', 40, 'Pechuga de pollo asada', 24000, NULL, NULL, 2, 'pechuga_grande.jpg', 'Disponible'),
+(12, 'Pechuga pequeña (200g)', 40, 'Pechuga de pollo asada tamaño pequeño', 19000, NULL, NULL, 2, 'pechuga_pequena.jpg', 'Disponible'),
+(13, 'Pollo al horno', 20, 'Pollo asado al horno', 16000, NULL, NULL, 2, 'pollo_horno.jpg', 'Disponible'),
+(14, 'Lomo de cerdo grande (320g)', 40, 'Lomo de cerdo a la parrilla', 26000, NULL, NULL, 3, 'lomo_cerdo_grande.jpg', 'Disponible'),
+(15, 'Lomo de cerdo pequeño (200g)', 40, 'Lomo de cerdo tamaño pequeño', 20000, NULL, NULL, 3, 'lomo_cerdo_pequeno.jpg', 'Disponible'),
+(16, 'Costillitas de cerdo (350g)', 50, 'Costillas de cerdo disponibles jueves a domingo', 28000, NULL, NULL, 3, 'costillitas_cerdo.jpg', 'Disponible'),
+(17, 'Chorizo', 30, 'Chorizo', 5000, NULL, NULL, 4, 'chorizo.jpg', 'Disponible'),
+(18, 'Arepitas de la parrilla', 40, 'Arepas pequeñas a la parrilla', 4000, NULL, NULL, 4, 'arepitas_parrilla.jpg', 'Disponible'),
+(19, 'Ajiaco con Pollo (Lunes)', 20, 'Plato típico servido los lunes', 20000, NULL, NULL, 5, 'ajiaco_pollo.jpeg', 'Disponible'),
+(20, 'Mondongo (Martes)', 20, 'Plato tradicional servido los martes', 20000, NULL, NULL, 5, 'mondongo.jpg', 'Disponible'),
+(21, 'Variado (Miércoles)', 20, 'Plato del día variado servido los miércoles', 20000, NULL, NULL, 5, 'variado.jpg', 'Disponible'),
+(22, 'Frijolada (Jueves)', 20, 'Plato típico servido los jueves', 20000, NULL, NULL, 5, 'frijolada.jpg', 'Disponible'),
+(23, 'Sancocho Mixto (Viernes)', 20, 'Sancocho de carnes mixtas servido los viernes', 20000, NULL, NULL, 5, 'sancocho_mixto.jpg', 'Disponible'),
+(24, 'Papa salada', 50, 'Papa cocida con sal', 0, NULL, NULL, 6, 'papa.jpg', 'Disponible'),
+(25, 'Yuca cocida', 20, 'Yuca hervida', 0, NULL, NULL, 6, 'yuca.jpg', 'Disponible'),
+(26, 'Aguacate macerado con sal', 200, 'Delicioso aguacate', 0, NULL, NULL, 6, 'aguacate.jpg', 'Disponible'),
+(27, 'Arepa de maíz y queso', 30, 'Arepa casera de maíz y queso', 0, NULL, NULL, 6, 'arepitas_parriilla.jpg', 'Disponible'),
+(28, 'Ensalada de la casa', 20, 'Mezcla fresca de vegetales', 0, NULL, NULL, 6, 'ensalada.jpg', 'Disponible'),
+(29, 'Arroz blanco', 20, 'Arroz blanco tradicional', 0, NULL, NULL, 6, 'arroz.jpg', 'Disponible'),
+(30, 'Plato mixto', 30, 'Dos tipos de carne entre pechuga, churrasco y lomo de cerdo', 39000, NULL, NULL, 7, 'plato_mixto.jpg', 'Disponible'),
+(31, 'Parrillada (res, cerdo, pechuga y chorizo)', 30, 'Parrillada mixta con carnes variadas', 39000, NULL, NULL, 7, 'parrillada.jpg', 'Disponible'),
+(32, 'Medallones de lomo (300g)', 30, 'Corte grueso de lomo de res a la parrilla', 34000, NULL, NULL, 8, 'medallones_lomo.png', 'Disponible'),
+(33, 'Biffe chorizo (350g)', 30, 'Corte grueso de biffe chorizo', 34000, NULL, NULL, 8, 'biffe_chorizo.jpg', 'Disponible'),
+(34, 'Entrecot', 30, 'Corte de res jugoso a la parrilla', 34000, NULL, NULL, 8, 'entrecot.jpg', 'Disponible'),
+(35, 'Gaseosa (350ml)', 60, 'Gaseosa personal 350ml', 3000, NULL, NULL, 9, 'Gaseosa350.jpg', 'Disponible'),
+(36, 'Gaseosa (250ml)', 60, 'Gaseosa pequeña 250ml', 2500, NULL, NULL, 9, 'gaseosa250.jpg', 'Disponible'),
+(37, 'Cola & Pola', 60, 'Bebida tradicional', 4000, NULL, NULL, 9, 'colaypola.jpg', 'Disponible'),
+(38, 'Cerveza Águila o Poker', 60, 'Cerveza nacional Águila o Poker', 4500, NULL, NULL, 9, 'cerveza.jpg', 'Disponible'),
+(39, 'Cerveza Club Colombia', 60, 'Cerveza Club Colombia', 6000, NULL, NULL, 9, 'cervezaclub.jpg', 'Disponible'),
+(40, 'Agua en botella (600ml)', 60, 'Agua embotellada natural 600ml', 3500, NULL, NULL, 9, 'agua.jpg', 'Disponible'),
+(41, 'Agua con gas (600ml)', 60, 'Agua con gas 600ml', 3500, NULL, NULL, 9, 'aguagas.jpg', 'Disponible'),
+(42, 'Jugo del día', 60, 'Jugo natural del día', 2500, NULL, NULL, 9, 'jugo.jpg', 'Disponible'),
+(43, 'Aguacate', 10, 'Porción de aguacate fresco', 7000, NULL, NULL, 10, 'aguacate.jpg', 'Disponible'),
+(44, 'Ensalada (porción)', 20, 'Porción de ensalada fresca', 4000, NULL, NULL, 10, 'ensalada.jpg', 'Disponible'),
+(45, 'Arroz blanco', 20, 'Porción de arroz blanco', 3500, NULL, NULL, 10, 'arroz.jpg', 'Disponible'),
+(46, 'Papa salada', 50, 'Papa cocida con sal', 3500, NULL, NULL, 10, 'papa.jpg', 'Disponible'),
+(47, 'Yuca al vapor', 20, 'Porción de yuca cocida al vapor', 4000, NULL, NULL, 10, 'yuca.jpg', 'Disponible'),
+(48, 'Sopa', 40, 'Porción de sopa del día', 5000, NULL, NULL, 10, 'sopa.jpg', 'Disponible');
 
 --
 -- Disparadores `productos`
@@ -425,7 +498,12 @@ CREATE TABLE `reservas` (
 
 INSERT INTO `reservas` (`id_reserva`, `fecha`, `hora`, `cant_personas`, `estado`, `telefono`, `id_usuario`, `nombre`, `documento`, `tipo_evento`, `comentarios`) VALUES
 (1, '2025-11-04', '', '10', 'Completada', '3202995114', 45, 'Tommy ', '1141118769', 'Almuerzo', 'holaa'),
-(2, '2025-11-05', '2:00pm-4:00pm', '2', 'confirmada', '3202995114', 44, 'Tommy ', '1111111', 'Almuerzo', '');
+(2, '2025-11-05', '2:00pm-4:00pm', '2', 'confirmada', '3202995114', 44, 'Tommy ', '1111111', 'Almuerzo', ''),
+(3, '2025-11-07', '12:30pm-2:30pm', '10', 'Pendiente', '3133443343', 48, 'sofia', '8273627', 'Almuerzo', 'hola'),
+(4, '2025-11-13', '12:30pm-2:30pm', '4', 'Pendiente', '3216758943', 48, 'Daniel', '345677', 'Reunión', 'si'),
+(6, '2025-11-13', '2:00pm-4:00pm', '5', 'Pendiente', '3176849663', 48, 'Wendy', '1242557', 'Reunión', 'hola'),
+(7, '2025-11-20', '2:00pm-4:00pm', '6', 'Pendiente', '3823792393', 48, 'luz ', '19790', 'Almuerzo', 'hola'),
+(8, '2025-11-08', '12:30pm-2:30pm', '2', 'Pendiente', '3133443343', 48, 'Wendy', '133567', 'Reunión', 'hola');
 
 --
 -- Disparadores `reservas`
@@ -512,7 +590,8 @@ CREATE TABLE `usuarios` (
 INSERT INTO `usuarios` (`id_usuario`, `nombre`, `apellido`, `telefono`, `direccion`, `correo`, `contraseña`, `rol`, `estado`, `token_activacion`) VALUES
 (41, 'Carlos', 'ARIAS', 3227288957, 'Calle 50 #10-20', 'andresfariasa@juandelcorral.edu.co', 'scrypt:32768:8:1$YSRmC1o4NPXHpv7H$348bfc74f22207a360287f557e089860aeaad6bf0ef467898e51924005cec898d69fb00e089c208f80f00b9306c2c30b596ac407b99f70e00ce93135bc571f3c', 'administrador', 'activo', NULL),
 (44, 'ANDRES', 'ARIAS', 3227288957, '23123213', 'andresitoarias96@gmail.com', 'scrypt:32768:8:1$klKZyuqIwyWus5G0$e025b24bdba0c53be4d1223f2180805c898c507b940f96a3723acf73615c8b4e00559a614d9705647888c19e46c4ebe1be2167c090febb318c6076eed57f5bfa', 'administrador', 'activo', NULL),
-(45, 'Tommy ', 'V', 3203995114, 'Calle83', 'gisellvega820@gmail.com', 'scrypt:32768:8:1$9yIqNYFkY0T7QZGP$db44251785fa11a7b4fe06402d6d17bcdd6befdf29e4cb8a69d31c742c52ee67dd1966410cf33bba8c5158a639db11c103a53338c702d806743ee727aa84ef82', 'empleado', 'activo', NULL);
+(45, 'Tommy ', 'V', 3203995114, 'Calle83', 'gisellvega820@gmail.com', 'scrypt:32768:8:1$9yIqNYFkY0T7QZGP$db44251785fa11a7b4fe06402d6d17bcdd6befdf29e4cb8a69d31c742c52ee67dd1966410cf33bba8c5158a639db11c103a53338c702d806743ee727aa84ef82', 'empleado', 'activo', NULL),
+(48, 'Wendy', 'Mercado', 3176849663, 'calle 20 # 4-11', 'wenda109108@gmail.com', 'scrypt:32768:8:1$14UwufXojS84lLAC$f311055ac26342cb89f53ab251bdee826cf371c029cd48e7643de508c1f7ed94bbe3b8bf7f534c5ec6205bf569365873e2f3a755590341295b237f814e4b7d2c', 'cliente', 'activo', NULL);
 
 --
 -- Disparadores `usuarios`
@@ -698,6 +777,14 @@ ALTER TABLE `categorias`
   ADD PRIMARY KEY (`id_categoria`);
 
 --
+-- Indices de la tabla `detalle_pedido`
+--
+ALTER TABLE `detalle_pedido`
+  ADD PRIMARY KEY (`id_detalle`),
+  ADD KEY `fk_detalle_pedido_pedido` (`cod_pedido`),
+  ADD KEY `fk_detalle_pedido_producto` (`cod_producto`);
+
+--
 -- Indices de la tabla `detalle_pedido_restaurante`
 --
 ALTER TABLE `detalle_pedido_restaurante`
@@ -717,6 +804,12 @@ ALTER TABLE `mesas`
 ALTER TABLE `pagos_restaurante`
   ADD PRIMARY KEY (`id_pago_restaurante`),
   ADD KEY `fk_pagos_mesa` (`id_mesa`);
+
+--
+-- Indices de la tabla `pedidos`
+--
+ALTER TABLE `pedidos`
+  ADD PRIMARY KEY (`id_pedido`);
 
 --
 -- Indices de la tabla `productos`
@@ -749,6 +842,12 @@ ALTER TABLE `categorias`
   MODIFY `id_categoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
+-- AUTO_INCREMENT de la tabla `detalle_pedido`
+--
+ALTER TABLE `detalle_pedido`
+  MODIFY `id_detalle` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
 -- AUTO_INCREMENT de la tabla `detalle_pedido_restaurante`
 --
 ALTER TABLE `detalle_pedido_restaurante`
@@ -767,26 +866,39 @@ ALTER TABLE `pagos_restaurante`
   MODIFY `id_pago_restaurante` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
+-- AUTO_INCREMENT de la tabla `pedidos`
+--
+ALTER TABLE `pedidos`
+  MODIFY `id_pedido` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
 -- AUTO_INCREMENT de la tabla `productos`
 --
 ALTER TABLE `productos`
-  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
 
 --
 -- AUTO_INCREMENT de la tabla `reservas`
 --
 ALTER TABLE `reservas`
-  MODIFY `id_reserva` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_reserva` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
 
 --
 -- Restricciones para tablas volcadas
 --
+
+--
+-- Filtros para la tabla `detalle_pedido`
+--
+ALTER TABLE `detalle_pedido`
+  ADD CONSTRAINT `fk_detalle_pedido_pedido` FOREIGN KEY (`cod_pedido`) REFERENCES `pedidos` (`id_pedido`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_detalle_pedido_producto` FOREIGN KEY (`cod_producto`) REFERENCES `productos` (`id_producto`);
 
 --
 -- Filtros para la tabla `detalle_pedido_restaurante`

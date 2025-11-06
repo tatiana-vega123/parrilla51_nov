@@ -1,0 +1,172 @@
+body {
+    font-family: "Segoe UI", Tahoma, sans-serif;
+    background: #3a3a3a;
+    color: #fff;
+    margin: 0;
+}
+
+.container {
+    padding: 20px;
+}
+
+h2 {
+    text-align: center;
+    color: #ffd700;
+}
+
+.productos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 300px));
+    justify-content: center;
+    gap: 25px;
+    margin: 30px;
+}
+
+.producto-card {
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+.card {
+    background: #2f2f2f;
+    border-radius: 12px;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 460px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.6);
+}
+
+.card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 10px;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    display: block;
+    margin-bottom: 12px;
+}
+
+.acciones {
+    margin-top: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.acciones input[type="number"] {
+    width: 60px;
+    text-align: center;
+    border-radius: 6px;
+    border: none;
+    padding: 6px;
+    font-size: 14px;
+}
+
+.btn {
+    padding: 8px 14px;
+    background: #ffd700;
+    color: #000;
+    font-weight: bold;
+    border-radius: 6px;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.btn:hover {
+    background: #e0b800;
+    transform: scale(1.05);
+}
+
+.filtros {
+    text-align: center;
+    margin: 30px 0 20px 0;
+}
+
+.filtros button {
+    background: transparent;
+    color: #ffd700;
+    border: 2px solid #ffd700;
+    border-radius: 25px;
+    padding: 12px 18px;
+    margin: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.filtros button:hover {
+    background: #ffd700;
+    color: #000;
+    transform: scale(1.1);
+}
+
+#imagen-fondo {
+    display: flex;
+    justify-content: center;
+    margin-top: 100px;
+}
+
+#imagen-fondo img {
+    width: 600px;
+    height: auto;
+    opacity: 0.3;
+}
+
+#imagen-fondo.oculto {
+    display: none !important;
+}
+
+#mensaje-agregado {
+    position: fixed;
+    top: 25px;
+    right: 25px;
+    background: #4CAF50;
+    color: #fff;
+    padding: 14px 20px;
+    border-radius: 10px;
+    font-weight: bold;
+    display: none;
+    z-index: 9999;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    animation: aparecer 0.4s ease forwards;
+}
+
+@keyframes aparecer {
+    from { opacity: 0; transform: translateY(-15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+a.volver {
+    display: block;
+    margin-top: 20px;
+    text-align: center;
+    color: #ff4444;
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: bold;
+    transition: color 0.2s;
+}
+
+a.volver:hover {
+    color: #cc0000;
+}
+
+p {
+    text-align: center;
+    margin-top: 15px;
+}
