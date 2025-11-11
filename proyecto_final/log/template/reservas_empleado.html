@@ -23,6 +23,7 @@
       background: #2f2f2f;
       padding: 12px 30px;
       color: #fff;
+      width: 100%;
     }
 
     .logo {
@@ -46,6 +47,13 @@
       padding: 0;
     }
 
+    .nav-links li {
+      cursor: pointer;
+      font-weight: bold;
+      color: #fff;
+      transition: color 0.3s;
+    }
+
     .nav-links li a {
       color: #fff;
       text-decoration: none;
@@ -54,6 +62,11 @@
     .nav-links li a:hover {
       color: #ffd700;
     }
+
+    .nav-links li:not(:last-child) {
+      margin-top: 5px; 
+    }
+
 
     .btn-success {
       background-color: #ffd700;
@@ -136,9 +149,6 @@
       box-shadow: none;
     }
 
-    .search-container {
-      margin-bottom: 20px;
-    }
     .card {
       background-color: #2f2f2f;
       color: #f0f0f0;
@@ -280,7 +290,7 @@
     </form>
   </div>
 
-  <!-- 📜 BOTONES -->
+  <!--  BOTONES -->
   <div class="position-relative mb-3">
     <a href="{{ url_for('empleado.historial_reservas_em') }}" class="btn btn-warning position-absolute end-0">
       Historial
@@ -293,7 +303,7 @@
     </div>
   </div>
  
-    <!-- 🔹 LISTADO DE RESERVAS -->
+    <!-- LISTADO DE RESERVAS -->
     <div class="row mt-4 g-4">
       {% if reservas %}
         {% for res in reservas %}
@@ -328,7 +338,7 @@
             </div>
           </div>
 
-          <!-- 🟡 MODAL EDITAR -->
+          <!--  MODAL EDITAR -->
           <div class="modal fade" id="modalEditar{{ loop.index0 }}" tabindex="-1">
             <div class="modal-dialog">
               <form action="{{ url_for('empleado.editar_reserva', id_reserva=res.id_reserva) }}" method="POST" class="modal-content p-3">
@@ -388,8 +398,7 @@
                   <label class="form-label">Comentarios</label>
                   <input type="text" class="form-control mb-3" name="comentarios" value="{{ res.comentarios }}" />
 
-                  <label class="form-label">ID Usuario</label>
-                  <input type="number" class="form-control mb-3" name="id_usuario" value="{{ res.id_usuario }}" />
+                  <input type="hidden" name="id_usuario" value="{{ session['id_usuario'] }}">
 
                   <input type="hidden" name="estado" value="{{ res.estado }}">
                 </div>
@@ -401,7 +410,7 @@
             </div>
           </div>
 
-          <!-- 🔹 Modal Confirmar Eliminar -->
+          <!--  Modal Confirmar Eliminar -->
           <div class="modal fade" id="modalConfirmarEliminar{{ res.id_reserva }}" tabindex="-1"
             aria-labelledby="modalLabel{{ res.id_reserva }}" aria-hidden="true">
             <div class="modal-dialog">
@@ -422,7 +431,7 @@
               </div>
             </div>
           </div>
-          <!-- 🟢 MODAL CAMBIAR ESTADO -->
+          <!--  MODAL CAMBIAR ESTADO -->
           <div class="modal fade" id="modalEstado{{ res.id_reserva }}" tabindex="-1">
             <div class="modal-dialog">
               <form onsubmit="return cambiarEstado(event, {{ res.id_reserva }})" class="modal-content p-3">
@@ -512,8 +521,7 @@
             <label class="form-label">Comentarios</label>
             <input type="text" class="form-control mb-3" name="comentarios" />
 
-            <label class="form-label">ID Usuario</label>
-            <input type="number" class="form-control mb-3" name="id_usuario" required />
+            <input type="hidden" name="id_usuario" value="{{ session['id_usuario'] }}">
 
             <input type="hidden" name="estado" value="Pendiente">
           </div>

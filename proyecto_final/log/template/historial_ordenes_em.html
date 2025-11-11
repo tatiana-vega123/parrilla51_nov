@@ -20,7 +20,6 @@
       overflow-x: hidden;
     }
 
-    /* NAVBAR */
     .navbar-custom {
       background-color: #2f2f2f;
       padding: 10px 30px;
@@ -45,23 +44,19 @@
       color: #ff4444;
     }
 
-    .nav-links {
-      list-style: none;
-      display: flex;
-      gap: 25px;
-      margin: 0;
-      padding: 0;
-    }
-
-    .nav-links li a {
-      color: #fff;
-      text-decoration: none;
+    .btn-volver {
+      background-color: #ffd700;
+      color: black;
       font-weight: bold;
-      transition: color 0.3s;
+      border: none;
+      padding: 5px 12px;
+      border-radius: 4px;
+      text-decoration: none;
     }
 
-    .nav-links li a:hover {
-      color: #ffd700;
+    .btn-volver:hover {
+      background-color: #e6b800;
+      color: black;
     }
 
     /* CONTENEDOR */
@@ -146,18 +141,13 @@
   <!-- NAVBAR -->
   <nav class="navbar-custom">
     <div class="navbar-left">
-      <img src="{{ url_for('static', filename='img/logooo.png') }}" alt="Logo">
+      <img src="{{ url_for('static', filename='img/logooo.png') }}" alt="Logo" />
       <span>Parrilla 51</span>
     </div>
-    <ul class="nav-links">
-      <li><a href="{{ url_for('empleado.empleado_dashboard') }}">Inicio</a></li>
-      <li><a href="{{ url_for('empleado.mesas_empleado') }}">Mesas</a></li>
-      <li><a href="{{ url_for('empleado.registrar_pedido') }}">Registrar</a></li>
-      <li><a href="{{ url_for('empleado.ordenes_empleado') }}">Órdenes</a></li>
-      <li><a href="{{ url_for('empleado.reservas_empleado') }}">Reservas</a></li>
-      <li><a href="{{ url_for('empleado.perfil_empleado') }}"><i class="bi bi-person-circle" style="font-size: 1.3rem;"></i></a></li>
-    </ul>
+
+    <a href="{{ url_for('empleado.ordenes_empleado') }}" class="btn-volver">Volver a las órdenes</a>
   </nav>
+
 
   <!-- CONTENIDO -->
   <div class="ordenes-container">

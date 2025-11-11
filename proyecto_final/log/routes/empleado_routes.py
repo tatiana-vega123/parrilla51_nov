@@ -410,7 +410,7 @@ def reservas_empleado():
     cur.execute("""
         SELECT * FROM reservas
         WHERE estado IN ('Pendiente', 'Confirmada')
-        ORDER BY fecha ASC, hora ASC
+        ORDER BY id_reserva DESC
     """)
     reservas = cur.fetchall()
     cur.close()
@@ -436,7 +436,7 @@ def buscar_reservas():
         SELECT * FROM reservas
         WHERE (nombre LIKE %s OR documento LIKE %s OR telefono LIKE %s)
         AND estado IN ('Pendiente', 'Confirmada')
-        ORDER BY fecha ASC, hora ASC
+        ORDER BY fecha DESC
     """, (f'%{search_query}%', f'%{search_query}%', f'%{search_query}%'))
     reservas = cur.fetchall()
     cur.close()
@@ -445,24 +445,36 @@ def buscar_reservas():
     return render_template('reservas_empleado.html', reservas=reservas, today=today)
 
 # ===============================
-# AGREGAR RESERVA
+# AGREGAR RESERVA 
 # ===============================
 @empleado_bp.route('/empleado/agregar_reserva', methods=['POST'])
 def agregar_reserva():
-    fecha = request.form["fecha"]
+    es_empleado, mensaje = verificar_empleado()
+    if not es_empleado:
+        flash(mensaje, 'danger')
+        return redirect(url_for('auth.login'))
 
-    cur = mysql.connection.cursor()
+    # 🔹 Obtenemos el ID del usuario desde la sesión
+    id_usuario = session.get('id_usuario')
+
+    if not id_usuario:
+        flash("⚠️ No se encontró un usuario en sesión. Por favor inicia sesión nuevamente.", "error")
+        return redirect(url_for('auth.login'))
+
+    fecha = request.form["fecha"]
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
     # Validar reserva por fecha
-    cur.execute("SELECT COUNT(*) FROM reservas WHERE fecha = %s", (fecha,))
+    cur.execute("SELECT COUNT(*) AS total FROM reservas WHERE fecha = %s", (fecha,))
     result = cur.fetchone()
-    count = result['COUNT(*)'] if result else 0
+    count = result["total"] if result else 0
 
     if count > 0:
         flash("Ya existe una reserva para esta fecha. Solo se permite una por día.", "error")
         cur.close()
         return redirect(url_for("empleado.reservas_empleado"))
 
+    # Obtener datos del formulario
     nombre = request.form["nombre"]
     documento = request.form["documento"]
     telefono = request.form["telefono"]
@@ -470,16 +482,7 @@ def agregar_reserva():
     cant_personas = request.form["cant_personas"]
     tipo_evento = request.form["tipo_evento"]
     comentarios = request.form.get("comentarios", "")
-    id_usuario = request.form["id_usuario"]
-    estado = request.form.get("estado", "disponible")
-
-    # Validar que el id_usuario exista
-    cur.execute("SELECT id_usuario FROM usuarios WHERE id_usuario = %s", (id_usuario,))
-    usuario = cur.fetchone()
-    if not usuario:
-        flash("⚠️ El ID de usuario ingresado no existe. Por favor ingresa un ID válido.", "error")
-        cur.close()
-        return redirect(url_for("empleado.buscar_reservas"))
+    estado = request.form.get("estado", "Pendiente")
 
     try:
         cur.execute("""
@@ -492,18 +495,19 @@ def agregar_reserva():
             cant_personas, tipo_evento, comentarios, id_usuario, estado
         ))
         mysql.connection.commit()
-        flash("Reserva agregada exitosamente.", "success")
+        flash("✅ Reserva agregada exitosamente.", "success")
 
     except IntegrityError as e:
         mysql.connection.rollback()
-        flash(f"⚠️ Error de restricción de clave foránea: {str(e)}", "error")
+        flash(f"⚠️ Error de clave foránea: {str(e)}", "error")
 
     except Exception as e:
         mysql.connection.rollback()
-        flash(f"Ocurrió un error inesperado: {str(e)}", "error")
+        flash(f"⚠️ Ocurrió un error inesperado: {str(e)}", "error")
 
     finally:
         cur.close()
+
     return redirect(url_for('empleado.reservas_empleado'))
 
 # ===============================

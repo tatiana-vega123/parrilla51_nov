@@ -19,7 +19,7 @@
       flex-direction: column;
     }
 
-    /* 🔹 NAVBAR */
+      /* ==================== NAVBAR ==================== */
     .navbar {
       display: flex;
       align-items: center;
@@ -27,6 +27,7 @@
       background: #2f2f2f;
       padding: 12px 30px;
       color: #fff;
+      width: 100%;
     }
 
     .logo {
@@ -37,11 +38,38 @@
       font-weight: bold;
       color: #ff4444;
     }
-    .logo img { height: 40px; }
 
-    .nav-links { list-style: none; display: flex; gap: 25px; margin: 0; padding: 0; }
-    .nav-links li a { color: #fff; text-decoration: none; }
-    .nav-links li a:hover { color: #ffd700; }
+    .logo img {
+      height: 40px;
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 25px;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nav-links li {
+      cursor: pointer;
+      font-weight: bold;
+      color: #fff;
+      transition: color 0.3s;
+    }
+
+    .nav-links li a {
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .nav-links li a:hover {
+      color: #ffd700;
+    }
+    /* Para bajar los enlaces (Inicio, Mesas, Registrar, Órdenes, Reservas) */
+    .nav-links li:not(:last-child) {
+      margin-top: 5px;  /* Ajusta este valor para moverlos hacia abajo */
+    }
 
     /* 🔹 LISTAS (categorías y productos) */
     .list-group-item {
