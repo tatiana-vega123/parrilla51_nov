@@ -135,7 +135,8 @@ def historial_pagos_restaurante():
         cur.execute("SELECT * FROM pagos_restaurante ORDER BY fecha DESC, hora DESC")
 
     pagos = cur.fetchall()
-    historial = []
+
+    historial_por_fecha = {}
 
     for pago in pagos:
         cur.execute("""
@@ -147,10 +148,18 @@ def historial_pagos_restaurante():
         detalles = cur.fetchall()
 
         pago["detalles"] = detalles
-        historial.append(pago)
+
+        fecha = pago["fecha"].strftime("%Y-%m-%d")
+        if fecha not in historial_por_fecha:
+            historial_por_fecha[fecha] = []
+        historial_por_fecha[fecha].append(pago)
 
     cur.close()
-    return render_template('historial_pagos_restaurante.html', historial=historial)
+    return render_template(
+        'historial_pagos_restaurante.html',
+        historial_por_fecha=historial_por_fecha,
+        historial=pagos
+    )
 
 # ===============================
 # REGISTRAR - CATEGORÍAS Y PRODUCTOS

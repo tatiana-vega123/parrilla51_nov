@@ -20,29 +20,28 @@
       overflow-x: hidden;
     }
 
-    /* NAVBAR */
-    .navbar-custom {
-      background-color: #2f2f2f;
-      padding: 10px 30px;
+      /* ==================== NAVBAR ==================== */
+    .navbar {
       display: flex;
       align-items: center;
       justify-content: space-between;
+      background: #2f2f2f;
+      padding: 12px 30px;
+      color: #fff;
+      width: 100%;
     }
 
-    .navbar-left {
+    .logo {
       display: flex;
       align-items: center;
       gap: 10px;
-    }
-
-    .navbar-left img {
-      height: 40px;
-    }
-
-    .navbar-left span {
       font-size: 22px;
       font-weight: bold;
       color: #ff4444;
+    }
+
+    .logo img {
+      height: 40px;
     }
 
     .nav-links {
@@ -53,20 +52,25 @@
       padding: 0;
     }
 
+    .nav-links li {
+      cursor: pointer;
+      font-weight: bold;
+      color: #fff;
+      transition: color 0.3s;
+    }
+
     .nav-links li a {
       color: #fff;
       text-decoration: none;
-      font-weight: bold;
-      transition: color 0.3s;
     }
 
     .nav-links li a:hover {
       color: #ffd700;
     }
+    /* Para bajar los enlaces (Inicio, Mesas, Registrar, Órdenes, Reservas) */
     .nav-links li:not(:last-child) {
-      margin-top: 5px; 
+      margin-top: 5px;  /* Ajusta este valor para moverlos hacia abajo */
     }
-    
     .ordenes-container {
       padding: 20px;
       width: 100%;
@@ -208,19 +212,19 @@
 <body>
 
   <!-- NAVBAR -->
-  <nav class="navbar-custom">
-    <div class="navbar-left">
+  <nav class="navbar">
+    <div class="logo">
       <img src="{{ url_for('static', filename='img/logooo.png') }}" alt="Logo">
       <span>Parrilla 51</span>
     </div>
-    <ul class="nav-links">
-      <li><a href="{{ url_for('empleado.empleado_dashboard') }}">Inicio</a></li>
-      <li><a href="{{ url_for('empleado.mesas_empleado') }}">Mesas</a></li>
-      <li><a href="{{ url_for('empleado.registrar_pedido') }}">Registrar</a></li>
-      <li><a href="{{ url_for('empleado.ordenes_empleado') }}">Órdenes</a></li>
-      <li><a href="{{ url_for('empleado.reservas_empleado') }}">Reservas</a></li>
-      <li><a href="{{ url_for('empleado.perfil_empleado') }}"><i class="bi bi-person-circle" style="font-size: 1.3rem;"></i></a></li>
-    </ul>
+      <ul class="nav-links">
+        <li><a href="{{ url_for('empleado.empleado_dashboard') }}">Inicio</a></li>
+        <li><a href="{{ url_for('empleado.mesas_empleado') }}">Mesas</a></li>
+        <li><a href="{{ url_for('empleado.registrar_pedido') }}">Registrar</a></li>
+        <li><a href="{{ url_for('empleado.ordenes_empleado') }}">Órdenes</a></li>
+        <li><a href="{{ url_for('empleado.reservas_empleado') }}">Reservas</a></li>
+        <li><a href="{{ url_for('empleado.perfil_empleado') }}"><i class="bi bi-person-circle" style="font-size: 1.3rem;"></i></a></li>
+      </ul>
   </nav>
 
   <!-- CONTENIDO -->
