@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 06-11-2025 a las 02:32:28
+-- Tiempo de generación: 14-11-2025 a las 00:15:11
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -115,7 +115,13 @@ INSERT INTO `alertas` (`id_alerta`, `mensaje`, `fecha`, `tipo`) VALUES
 (0, '❌ Se eliminó el producto \"Papas fritasss\" del inventario', '2025-11-04 17:35:57', 'producto'),
 (0, '❌ Se eliminó el producto \"Arroz blanco\" del inventario', '2025-11-04 17:35:57', 'producto'),
 (0, '? Se creó una reserva para el 2025-11-20 a las 2:00pm-4:00pm para 6 personas, ', '2025-11-05 16:53:05', 'reserva'),
-(0, '? Se creó una reserva para el 2025-11-08 a las 12:30pm-2:30pm para 2 personas, ', '2025-11-05 20:17:43', 'reserva');
+(0, '? Se creó una reserva para el 2025-11-08 a las 12:30pm-2:30pm para 2 personas, ', '2025-11-05 20:17:43', 'reserva'),
+(0, '❌ El pedido N° 3 fue cancelado', '2025-11-06 02:02:31', 'pedido'),
+(0, '❌ El pedido N° 3 fue cancelado', '2025-11-06 02:06:15', 'pedido'),
+(0, 'Nuevo usuario registrado: Tatiana (gisellvega820@gmail.com)', '2025-11-06 20:32:16', ''),
+(0, 'Nuevo usuario registrado: Blanca  (restauranteparrilla51@gmail.com)', '2025-11-06 20:50:36', ''),
+(0, '? El usuario \"Tommy  V\" fue desactivado', '2025-11-10 21:58:10', 'usuario'),
+(0, '? Se creó una reserva para el 2025-11-11 a las  para 12 personas, ', '2025-11-11 01:14:26', 'reserva');
 
 -- --------------------------------------------------------
 
@@ -187,18 +193,19 @@ CREATE TABLE `detalle_pedido_restaurante` (
   `precio_unitario` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- --------------------------------------------------------
-
 --
--- Estructura de tabla para la tabla `domicilios`
+-- Volcado de datos para la tabla `detalle_pedido_restaurante`
 --
 
-CREATE TABLE `domicilios` (
-  `id_domicilio` int(11) NOT NULL,
-  `cod_pedido` int(11) DEFAULT NULL,
-  `cod_usuario` int(11) DEFAULT NULL,
-  `cod_direccion` varchar(100) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+INSERT INTO `detalle_pedido_restaurante` (`id_detalle_pedido_restaurante`, `id_pago_restaurante`, `id_producto`, `cantidad`, `precio_unitario`) VALUES
+(2, 2, 11, 1, 24000.00),
+(3, 3, 1, 1, 39000.00),
+(4, 4, 1, 1, 39000.00),
+(5, 4, 2, 1, 25000.00),
+(6, 5, 17, 1, 5000.00),
+(7, 5, 18, 1, 4000.00),
+(8, 6, 10, 1, 19000.00),
+(9, 6, 11, 1, 24000.00);
 
 -- --------------------------------------------------------
 
@@ -214,6 +221,47 @@ CREATE TABLE `historial_pedidos` (
   `hora` time NOT NULL,
   `fecha_cambio` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `historial_pedidos`
+--
+
+INSERT INTO `historial_pedidos` (`id_historial`, `id_pedido`, `estado`, `fecha`, `hora`, `fecha_cambio`) VALUES
+(0, 5, 'pendiente', '0000-00-00', '00:00:00', '2025-11-05 23:55:50'),
+(0, 5, 'pendiente', '0000-00-00', '00:00:00', '2025-11-05 23:55:53'),
+(0, 5, 'pendiente', '0000-00-00', '00:00:00', '2025-11-06 00:00:08'),
+(0, 5, 'pendiente', '0000-00-00', '00:00:00', '2025-11-06 00:00:08'),
+(0, 3, 'pendiente', '0000-00-00', '00:00:00', '2025-11-06 00:06:13'),
+(0, 3, 'pendiente', '0000-00-00', '00:00:00', '2025-11-06 00:06:14'),
+(0, 5, 'pendiente', '0000-00-00', '00:00:00', '2025-11-06 00:33:37'),
+(0, 3, 'pendiente', '0000-00-00', '00:00:00', '2025-11-06 00:33:39'),
+(0, 5, 'pendiente', '0000-00-00', '00:00:00', '2025-11-06 00:33:44'),
+(0, 3, 'pendiente', '0000-00-00', '00:00:00', '2025-11-06 00:33:45'),
+(0, 5, 'pendiente', '0000-00-00', '00:00:00', '2025-11-06 01:11:34'),
+(0, 4, 'pendiente', '0000-00-00', '00:00:00', '2025-11-06 01:11:41'),
+(0, 2, 'pendiente', '0000-00-00', '00:00:00', '2025-11-06 01:11:53'),
+(0, 1, 'pendiente', '0000-00-00', '00:00:00', '2025-11-06 01:46:49'),
+(0, 1, 'pendiente', '0000-00-00', '00:00:00', '2025-11-06 01:46:52'),
+(0, 1, 'pendiente', '0000-00-00', '00:00:00', '2025-11-06 01:52:54'),
+(0, 1, 'pendiente', '0000-00-00', '00:00:00', '2025-11-06 02:02:08'),
+(0, 2, 'pendiente', '0000-00-00', '00:00:00', '2025-11-06 02:02:08'),
+(0, 4, 'pendiente', '0000-00-00', '00:00:00', '2025-11-06 02:02:08'),
+(0, 5, 'pendiente', '0000-00-00', '00:00:00', '2025-11-06 02:02:08'),
+(0, 1, 'en preparacion', '0000-00-00', '00:00:00', '2025-11-06 02:02:18'),
+(0, 1, 'entregado', '0000-00-00', '00:00:00', '2025-11-06 02:02:22'),
+(0, 3, 'cancelado', '0000-00-00', '00:00:00', '2025-11-06 02:02:31'),
+(0, 5, 'entregado', '0000-00-00', '00:00:00', '2025-11-06 02:02:35'),
+(0, 4, 'entregado', '0000-00-00', '00:00:00', '2025-11-06 02:02:38'),
+(0, 2, 'entregado', '0000-00-00', '00:00:00', '2025-11-06 02:02:42'),
+(0, 1, 'pendiente', '0000-00-00', '00:00:00', '2025-11-06 02:02:57'),
+(0, 2, 'pendiente', '0000-00-00', '00:00:00', '2025-11-06 02:02:57'),
+(0, 3, 'pendiente', '0000-00-00', '00:00:00', '2025-11-06 02:02:57'),
+(0, 4, 'pendiente', '0000-00-00', '00:00:00', '2025-11-06 02:02:57'),
+(0, 5, 'pendiente', '0000-00-00', '00:00:00', '2025-11-06 02:02:57'),
+(0, 5, 'entregado', '0000-00-00', '00:00:00', '2025-11-06 02:06:02'),
+(0, 3, 'cancelado', '0000-00-00', '00:00:00', '2025-11-06 02:06:15'),
+(0, 4, 'entregado', '0000-00-00', '00:00:00', '2025-11-06 02:06:25'),
+(0, 2, 'en preparacion', '0000-00-00', '00:00:00', '2025-11-06 02:20:07');
 
 -- --------------------------------------------------------
 
@@ -257,7 +305,7 @@ CREATE TABLE `mesas` (
 --
 
 INSERT INTO `mesas` (`id_mesa`, `numero_mesa`, `capacidad`, `ubicacion`, `estado`) VALUES
-(1, 1, 0, NULL, 'libre'),
+(1, 1, 0, NULL, 'ocupada'),
 (2, 2, 0, NULL, 'libre'),
 (3, 3, 0, NULL, 'libre'),
 (4, 4, 0, NULL, 'libre'),
@@ -297,7 +345,12 @@ CREATE TABLE `pagos_restaurante` (
 --
 
 INSERT INTO `pagos_restaurante` (`id_pago_restaurante`, `id_mesa`, `fecha`, `hora`, `total`) VALUES
-(1, 1, '2025-11-04', '01:17:05', 24000.00);
+(1, 1, '2025-11-04', '01:17:05', 24000.00),
+(2, 1, '2025-11-05', '23:28:58', 24000.00),
+(3, 1, '2025-11-11', '03:33:33', 39000.00),
+(4, 1, '2025-11-12', '22:56:55', 64000.00),
+(5, 19, '2025-11-12', '22:57:12', 9000.00),
+(6, 5, '2025-11-12', '22:57:38', 43000.00);
 
 -- --------------------------------------------------------
 
@@ -324,10 +377,10 @@ CREATE TABLE `pedidos` (
 
 INSERT INTO `pedidos` (`id_pedido`, `tipo_entrega`, `fecha`, `hora`, `metodo_pago`, `telefono`, `total`, `estado`, `cod_usuario`, `direccion`) VALUES
 (1, 'restaurante', '2025-11-05', '15:06:58', 'efectivo', NULL, 24000, 'pendiente', 48, NULL),
-(2, 'restaurante', '2025-11-05', '15:27:21', 'efectivo', NULL, 46000, 'pendiente', 48, NULL),
-(3, 'domicilio', '2025-11-05', '16:48:00', 'efectivo', 3271738299, 3500, 'pendiente', 48, 'calle 20 # 4-11'),
-(4, 'restaurante', '2025-11-05', '16:56:02', 'efectivo', NULL, 48000, 'pendiente', 48, NULL),
-(5, 'restaurante', '2025-11-05', '20:18:56', 'efectivo', NULL, 4000, 'pendiente', 48, NULL);
+(2, 'restaurante', '2025-11-05', '15:27:21', 'efectivo', NULL, 46000, 'en preparacion', 48, NULL),
+(3, 'domicilio', '2025-11-05', '16:48:00', 'efectivo', 3271738299, 3500, 'cancelado', 48, 'calle 20 # 4-11'),
+(4, 'restaurante', '2025-11-05', '16:56:02', 'efectivo', NULL, 48000, 'entregado', 48, NULL),
+(5, 'restaurante', '2025-11-05', '20:18:56', 'efectivo', NULL, 4000, 'entregado', 48, NULL);
 
 --
 -- Disparadores `pedidos`
@@ -358,17 +411,6 @@ CREATE TRIGGER `trg_pedidos_historial` AFTER UPDATE ON `pedidos` FOR EACH ROW BE
 END
 $$
 DELIMITER ;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `pedido_mesa`
---
-
-CREATE TABLE `pedido_mesa` (
-  `cod_pedido` int(11) NOT NULL,
-  `cod_mesa` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -483,7 +525,7 @@ CREATE TABLE `reservas` (
   `fecha` date DEFAULT NULL,
   `hora` enum('','11:30m-1:30pm','12:00pm-2:00pm','12:30pm-2:30pm','1:00pm-3:00pm','1:30pm-3:30pm','2:00pm-4:00pm','2:30pm-4:30pm') NOT NULL,
   `cant_personas` enum('','1','2','3','4','5','6','7','8','9','10','11','12') DEFAULT NULL,
-  `estado` enum('Pendiente','confirmada','Completada') DEFAULT NULL,
+  `estado` enum('Pendiente','Confirmada','Completada') DEFAULT 'Pendiente',
   `telefono` varchar(20) DEFAULT NULL,
   `id_usuario` int(11) DEFAULT NULL,
   `nombre` varchar(100) DEFAULT NULL,
@@ -498,12 +540,13 @@ CREATE TABLE `reservas` (
 
 INSERT INTO `reservas` (`id_reserva`, `fecha`, `hora`, `cant_personas`, `estado`, `telefono`, `id_usuario`, `nombre`, `documento`, `tipo_evento`, `comentarios`) VALUES
 (1, '2025-11-04', '', '10', 'Completada', '3202995114', 45, 'Tommy ', '1141118769', 'Almuerzo', 'holaa'),
-(2, '2025-11-05', '2:00pm-4:00pm', '2', 'confirmada', '3202995114', 44, 'Tommy ', '1111111', 'Almuerzo', ''),
+(2, '2025-11-05', '2:00pm-4:00pm', '2', 'Confirmada', '3202995114', 44, 'Tommy ', '1111111', 'Almuerzo', ''),
 (3, '2025-11-07', '12:30pm-2:30pm', '10', 'Pendiente', '3133443343', 48, 'sofia', '8273627', 'Almuerzo', 'hola'),
 (4, '2025-11-13', '12:30pm-2:30pm', '4', 'Pendiente', '3216758943', 48, 'Daniel', '345677', 'Reunión', 'si'),
 (6, '2025-11-13', '2:00pm-4:00pm', '5', 'Pendiente', '3176849663', 48, 'Wendy', '1242557', 'Reunión', 'hola'),
 (7, '2025-11-20', '2:00pm-4:00pm', '6', 'Pendiente', '3823792393', 48, 'luz ', '19790', 'Almuerzo', 'hola'),
-(8, '2025-11-08', '12:30pm-2:30pm', '2', 'Pendiente', '3133443343', 48, 'Wendy', '133567', 'Reunión', 'hola');
+(8, '2025-11-08', '12:30pm-2:30pm', '2', 'Pendiente', '3133443343', 48, 'Wendy', '133567', 'Reunión', 'hola'),
+(9, '2025-11-11', '2:30pm-4:30pm', '11', 'Pendiente', '3202995114', 45, 'uwu', '1111', 'Almuerzo', '');
 
 --
 -- Disparadores `reservas`
@@ -591,7 +634,8 @@ INSERT INTO `usuarios` (`id_usuario`, `nombre`, `apellido`, `telefono`, `direcci
 (41, 'Carlos', 'ARIAS', 3227288957, 'Calle 50 #10-20', 'andresfariasa@juandelcorral.edu.co', 'scrypt:32768:8:1$YSRmC1o4NPXHpv7H$348bfc74f22207a360287f557e089860aeaad6bf0ef467898e51924005cec898d69fb00e089c208f80f00b9306c2c30b596ac407b99f70e00ce93135bc571f3c', 'administrador', 'activo', NULL),
 (44, 'ANDRES', 'ARIAS', 3227288957, '23123213', 'andresitoarias96@gmail.com', 'scrypt:32768:8:1$klKZyuqIwyWus5G0$e025b24bdba0c53be4d1223f2180805c898c507b940f96a3723acf73615c8b4e00559a614d9705647888c19e46c4ebe1be2167c090febb318c6076eed57f5bfa', 'administrador', 'activo', NULL),
 (45, 'Tommy ', 'V', 3203995114, 'Calle83', 'gisellvega820@gmail.com', 'scrypt:32768:8:1$9yIqNYFkY0T7QZGP$db44251785fa11a7b4fe06402d6d17bcdd6befdf29e4cb8a69d31c742c52ee67dd1966410cf33bba8c5158a639db11c103a53338c702d806743ee727aa84ef82', 'empleado', 'activo', NULL),
-(48, 'Wendy', 'Mercado', 3176849663, 'calle 20 # 4-11', 'wenda109108@gmail.com', 'scrypt:32768:8:1$14UwufXojS84lLAC$f311055ac26342cb89f53ab251bdee826cf371c029cd48e7643de508c1f7ed94bbe3b8bf7f534c5ec6205bf569365873e2f3a755590341295b237f814e4b7d2c', 'cliente', 'activo', NULL);
+(48, 'Wendy', 'Mercado', 3176849663, 'calle 20 # 4-11', 'wenda109108@gmail.com', 'scrypt:32768:8:1$14UwufXojS84lLAC$f311055ac26342cb89f53ab251bdee826cf371c029cd48e7643de508c1f7ed94bbe3b8bf7f534c5ec6205bf569365873e2f3a755590341295b237f814e4b7d2c', 'cliente', 'activo', NULL),
+(50, 'Blanca ', 'M', 3203995114, 'Calle80', 'restauranteparrilla51@gmail.com', 'scrypt:32768:8:1$PlpFRML20NrFGsYN$33075c4a311a0541da8698fc4e85f2cd51d010eb0be566d4038ae6a5dbec60433f29fe93416a73f92919c448f32a3b91525023bb92c3bc7dddde7a6582714508', 'administrador', 'activo', NULL);
 
 --
 -- Disparadores `usuarios`
@@ -678,50 +722,6 @@ CREATE TABLE `vista_pedidos_usuarios` (
   `hora` time DEFAULT NULL,
   `total` bigint(20) DEFAULT NULL,
   `estado` enum('entregado','cancelado','pendiente','en preparacion') DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `vista_productos_categorias`
---
-
-CREATE TABLE `vista_productos_categorias` (
-  `id_producto` int(11) DEFAULT NULL,
-  `nombre` varchar(60) DEFAULT NULL,
-  `precio` bigint(20) DEFAULT NULL,
-  `cantidad` bigint(20) DEFAULT NULL,
-  `nombre_categoria` varchar(150) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `vista_reservas_mesas`
---
-
-CREATE TABLE `vista_reservas_mesas` (
-  `id_reserva` int(11) DEFAULT NULL,
-  `fecha` date DEFAULT NULL,
-  `hora` enum('','11:30m-1:30pm','12:00pm-2:00pm','12:30pm-2:30pm','1:00pm-3:00pm','1:30pm-3:30pm','2:00pm-4:00pm','2:30pm-4:30pm') DEFAULT NULL,
-  `cant_personas` enum('','1','2','3','4','5','6','7','8','9','10','11','12') DEFAULT NULL,
-  `estado` enum('Pendiente','confirmada','Completada') DEFAULT NULL,
-  `id_mesa` int(11) DEFAULT NULL,
-  `capacidad` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `vista_stock_bajo`
---
-
-CREATE TABLE `vista_stock_bajo` (
-  `id_producto` int(11) DEFAULT NULL,
-  `nombre` varchar(60) DEFAULT NULL,
-  `cantidad` bigint(20) DEFAULT NULL,
-  `precio` bigint(20) DEFAULT NULL,
-  `estado_stock` varchar(16) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -851,7 +851,7 @@ ALTER TABLE `detalle_pedido`
 -- AUTO_INCREMENT de la tabla `detalle_pedido_restaurante`
 --
 ALTER TABLE `detalle_pedido_restaurante`
-  MODIFY `id_detalle_pedido_restaurante` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_detalle_pedido_restaurante` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `mesas`
@@ -863,7 +863,7 @@ ALTER TABLE `mesas`
 -- AUTO_INCREMENT de la tabla `pagos_restaurante`
 --
 ALTER TABLE `pagos_restaurante`
-  MODIFY `id_pago_restaurante` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_pago_restaurante` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `pedidos`
@@ -881,13 +881,13 @@ ALTER TABLE `productos`
 -- AUTO_INCREMENT de la tabla `reservas`
 --
 ALTER TABLE `reservas`
-  MODIFY `id_reserva` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id_reserva` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 
 --
 -- Restricciones para tablas volcadas
